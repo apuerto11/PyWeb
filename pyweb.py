@@ -1,6 +1,7 @@
 import sqlite3
 import click
 import os
+import hashlib
 
 from flask import Flask, render_template, url_for, redirect, request, current_app, g
 from flask.cli import with_appcontext
@@ -30,6 +31,11 @@ def init_db():
 
 if not os.path.isfile('instance/flaskr.sqlite'):
     init_db()
+
+def hashMDP(pw):
+    m = hashlib.sha256()
+    m.update(pw.encode('utf-8'))
+    return m.digest()
 
 # def login():
 #     error=None
@@ -61,5 +67,5 @@ def insertDB():
 
     db.execute(
         "INSERT INTO users (username, password, firstname, name) VALUES (?, ?, ?, ?)",
-        ("apuerto", "password", "Andrea", "Puerto"))
+        ("apuerto", hashMDP('password'), "Andrea", "Puerto"))
     db.commit()
