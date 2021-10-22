@@ -2,7 +2,15 @@ import sqlite3
 import click
 import os
 
-from flask import Flask, render_template, url_for, redirect, request, current_app, session
+from flask import (
+    Flask,
+    render_template,
+    url_for,
+    redirect,
+    request,
+    current_app,
+    session,
+)
 from flask.cli import with_appcontext
 from flask.helpers import flash
 
@@ -29,6 +37,33 @@ def init_db():
 if not os.path.isfile('instance/flaskr.sqlite'):
     init_db()
 
+
+def hashMDP(pw):
+    m = hashlib.sha256()
+    m.update(pw.encode("utf-8"))
+    return m.digest()
+
+
+def dbInsertUser(user, passw, firstname, name):
+    db = get_db()
+
+    db.execute(
+        "INSERT INTO users (username, password, firstname, name) VALUES (?, ?, ?, ?)",
+        (user, hashMDP(passw), name, firstname),
+    )
+    db.commit()
+
+
+def dbInsertTask(name, desc, ownerId):
+    db = get_db()
+
+    db.execute(
+        "INSERT INTO tasks (name, description, owner) VALUES (?, ?, ?)",
+        (name, desc, ownerId),
+    )
+    db.commit()
+
+
 # def login():
 #     error=None
 #     if request.method == 'POST':
@@ -39,8 +74,9 @@ titre = "IziPost"
 
 @app.route("/")
 def index(name=None):
-    if 'username' in session:
-        return render_template('index.html', tittle = titre)
+    if "username" in session:
+        return render_template("index.html", tittle=titre)
+
 
 @app.route("/about")
 def about():
@@ -54,43 +90,46 @@ def showLoginForm():
 def showSignUpForm():
    return render_template('signupForm.html',title=titre)
 
-@app.route("/login", methods=['GET', 'POST'])
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method=='POST':
-        username = request.form['username']
-        password = request.form['password']
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
         db = get_db()
         error = None
         user = db.execute(
-            'SELECT * FROM users WHERE username = ?', (username,)
+            "SELECT * FROM users WHERE username = ?", (username,)
         ).fetchone()
         if user is None:
-            error = 'Incorrect username'
-        elif not hashMDP(user['password'], password):
-            error ='Incorrect password'
+            error = "Incorrect username"
+        elif not hashMDP(user["password"], password):
+            error = "Incorrect password"
 
         if error is None:
             session.clear()
-            session['user_id'] = user['id']
-            return redirect(url_for('index'))
-        
+            session["user_id"] = user["id"]
+            return redirect(url_for("index"))
+
         flash(error)
 
-    return render_template('index.html', tittle = titre)
+    return render_template("index.html", tittle=titre)
 
-@app.route('/logout')
+
+@app.route("/logout")
 def logout():
     session.clear()
-    return redirect(url_for('index'))
+    return redirect(url_for("index"))
 
-def valid_login (username, password):
+
+def valid_login(username, password):
     error = "identifiant ou mot de passe invalide"
     db = get_db()
-    if username == db.execute("Select username from users where username = {{username}} and password = {{password}}"):
+    if username == db.execute(
+        "Select username from users where username = {{username}} and password = {{password}}"
+    ):
         return username
     else:
         return error
-   #return render_template('signupForm.html',title=titre)
 
     db.execute(
         "INSERT INTO users (username, password, firstname, name) VALUES (?, ?, ?, ?)",
@@ -105,3 +144,11 @@ def insertDB():
         "INSERT INTO users (username, password, firstname, name) VALUES (?, ?, ?, ?)",
         ("apuerto", "password", "Andrea", "Puerto"))
     db.commit()
+
+# return render_template('signupForm.html',title=titre)
+
+@app.route("/dbisert")
+def insertUser():
+    dbInsertUser("user", "password", "firstname", "name")
+    dbInsertTask("Test", "TESTETETETETET", 1)
+    return redirect(url_for("index"))
