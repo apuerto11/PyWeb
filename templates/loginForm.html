@@ -13,17 +13,18 @@
         </a>
         <h1 class="h3 mb-3 fw-normal">Connectez-vous</h1>
     
-        <div class="form-floating w-50 m-auto h-auto">
-          <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-          <label for="floatingInput" class="text-black">Email</label>
+        <div class="form-floating w-50 m-auto h-auto mt-2">
+          <input name="username" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+          <label for="floatingInput" class="text-black">Pseudo</label>
         </div>
-        <div class="form-floating w-50 m-auto h-auto">
-          <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+        <div class="form-floating w-50 m-auto h-auto mt-2">
+          <input name="password" type="password" class="form-control" id="floatingPassword" placeholder="Password">
           <label for="floatingPassword" class="text-black">Mot de passe</label>
         </div>
     
-        <button class="btn btn-lg btn-primary w-50 mt-5" type="submit">Se connecter</button>
+        <button class="btn btn-lg btn-success w-50 mt-2" type="submit">Se connecter</button>
       </form>
+      <a href="{{url_for('showSignUpForm')}}" class="text-decoration-none text-white">Je n'ai pas de compte...</a>
     </main>
 </body>
 </html>

@@ -15,9 +15,7 @@ titre = "IziPost"
 
 @app.route("/")
 def index(name=None):
-    
     return render_template('index.html',title=titre)
-
 
 @app.route("/about")
 def about():
