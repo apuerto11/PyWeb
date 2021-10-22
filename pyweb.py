@@ -2,8 +2,9 @@ import sqlite3
 import click
 import os
 
-from flask import Flask, render_template, url_for, redirect, request, current_app, g
+from flask import Flask, render_template, url_for, redirect, request, current_app, session
 from flask.cli import with_appcontext
+from flask.helpers import flash
 
 app = Flask(__name__)
 
@@ -38,7 +39,8 @@ titre = "IziPost"
 
 @app.route("/")
 def index(name=None):
-    return render_template('index.html',title=titre)
+    if 'username' in session:
+        return render_template('index.html', tittle = titre)
 
 @app.route("/about")
 def about():
@@ -52,6 +54,49 @@ def showLoginForm():
 def showSignUpForm():
    return render_template('signupForm.html',title=titre)
 
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    if request.method=='POST':
+        username = request.form['username']
+        password = request.form['password']
+        db = get_db()
+        error = None
+        user = db.execute(
+            'SELECT * FROM users WHERE username = ?', (username,)
+        ).fetchone()
+        if user is None:
+            error = 'Incorrect username'
+        elif not hashMDP(user['password'], password):
+            error ='Incorrect password'
+
+        if error is None:
+            session.clear()
+            session['user_id'] = user['id']
+            return redirect(url_for('index'))
+        
+        flash(error)
+
+    return render_template('index.html', tittle = titre)
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('index'))
+
+def valid_login (username, password):
+    error = "identifiant ou mot de passe invalide"
+    db = get_db()
+    if username == db.execute("Select username from users where username = {{username}} and password = {{password}}"):
+        return username
+    else:
+        return error
+   #return render_template('signupForm.html',title=titre)
+
+    db.execute(
+        "INSERT INTO users (username, password, firstname, name) VALUES (?, ?, ?, ?)",
+        ("apuerto", "password", "Andrea", "Puerto"))
+    db.commit()
+    
 @app.route("/dbisert")
 def insertDB():
     db = get_db()
