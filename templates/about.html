@@ -13,13 +13,13 @@
             </a>
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-              <li><a href="{{ url_for('index') }}" class="nav-link px-2 text-white">Home</a></li>
-              <li><a href="#" class="nav-link px-2 text-secondary">About</a></li>
+              <li><a href="{{ url_for('index') }}" class="nav-link px-2 text-white">Accueil</a></li>
+              <li><a href="#" class="nav-link px-2 text-secondary">A propos</a></li>
             </ul>
     
             <div class="text-end">
-              <button type="button" class="btn btn-outline-light me-2">Login</button>
-              <button type="button" class="btn btn-warning">Sign-up</button>
+                <a href="{{ url_for('showLoginForm') }}" class="btn btn-outline-light me-2">Se connecter</a>
+                <a href="{{ url_for('showSignUpForm') }}" class="btn btn-warning">S'inscrire</a>
             </div>
           </div>
         </div>
