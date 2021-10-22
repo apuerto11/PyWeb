@@ -35,7 +35,8 @@ def init_db_command():
     init_db()
     click.echo('initialized the database')
 
-init_db()
+if not os.path.isfile('instance/flaskr.sqlite'):
+    init_db()
 
 # def login():
 #     error=None
