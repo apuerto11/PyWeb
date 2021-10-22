@@ -28,13 +28,6 @@ def init_db():
     with app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
 
-#@click.command('init-db')
-#@with_appcontext
-#def init_db_command():
-#    """Clear the existing data and create new tables."""
-#    init_db()
-#    click.echo('initialized the database')
-
 if not os.path.isfile('instance/flaskr.sqlite'):
     init_db()
 
