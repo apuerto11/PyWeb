@@ -51,6 +51,16 @@ def dbInsertUser(user, passw, firstname, name):
     db.commit()
 
 
+def dbInsertTask(name, desc, ownerId):
+    db = get_db()
+
+    db.execute(
+        "INSERT INTO tasks (name, description, owner) VALUES (?, ?, ?)",
+        (name, desc, ownerId),
+    )
+    db.commit()
+
+
 # def login():
 #     error=None
 #     if request.method == 'POST':
@@ -81,6 +91,7 @@ def showSignUpForm():
 
 
 @app.route("/dbisert")
-def insertUser1():
+def insertUser():
     dbInsertUser("user", "password", "firstname", "name")
+    dbInsertTask("Test", "TESTETETETETET", 1)
     return redirect(url_for("index"))
