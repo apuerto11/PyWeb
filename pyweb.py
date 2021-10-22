@@ -28,12 +28,12 @@ def init_db():
     with app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
 
-@click.command('init-db')
-@with_appcontext
-def init_db_command():
-    """Clear the existing data and create new tables."""
-    init_db()
-    click.echo('initialized the database')
+#@click.command('init-db')
+#@with_appcontext
+#def init_db_command():
+#    """Clear the existing data and create new tables."""
+#    init_db()
+#    click.echo('initialized the database')
 
 if not os.path.isfile('instance/flaskr.sqlite'):
     init_db()
@@ -62,6 +62,11 @@ def showLoginForm():
 def showSignUpForm():
    return render_template('signupForm.html',title=titre)
 
-@app.route("/dbinit")
-def initDB():
-    init_db_command()
+@app.route("/dbisert")
+def insertDB():
+    db = get_db()
+
+    db.execute(
+        "INSERT INTO users (username, password, firstname, name) VALUES (?, ?, ?, ?)",
+        ("apuerto", "password", "Andrea", "Puerto"))
+    db.commit()
