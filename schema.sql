@@ -1,7 +1,9 @@
 CREATE TABLE "users" (
 	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 	username TEXT(25) NOT NULL,
-	password TEXT(80) NOT NULL
+	password TEXT(80) NOT NULL,
+	firstname TEXT(25) NOT NULL,
+	name TEXT(25) NOT NULL
 );
 
 CREATE TABLE "tasks" (
