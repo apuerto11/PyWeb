@@ -3,8 +3,6 @@ import click
 import os
 from flask.cli import with_appcontext
 from flask.helpers import flash
-
-
 from flask import (
     Flask,
     render_template,
@@ -18,8 +16,6 @@ from flask import (
 app = Flask(__name__)
 titre = "IziPost"
 
-
-
 # def login():
 #     error=None
 #     if request.method == 'POST':
@@ -27,21 +23,22 @@ titre = "IziPost"
 #         request.form['password']):
 #             return
 
-
+###################### Route ##########################
+### Index HTML ###
 @app.route("/")
 def index():
     # if "username" in session:
     #     
     return render_template("index.html", title=titre)
-
+### about HTML ###
 @app.route("/about")
 def about():
     return render_template('about.html',title=titre)
-
+### Connection page HTML ###
 @app.route("/loginForm")
 def showLoginForm():
    return render_template('loginForm.html',title=titre)
-
+### Sign-Up Page HTML ###
 @app.route("/signupForm")
 def showSignUpForm():
    return render_template('signupForm.html',title=titre)
@@ -68,13 +65,13 @@ def login():
 
         flash(error)
 
-    return render_template("index.html", tittle=titre)
-
+    return render_template("index.html", title=titre) # Pourquoi afficher quand meme l'index ici ?
 
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("index"))
+###################### End Route ##########################
 
 if not os.path.exists('instance'):
     os.makedirs('instance')
@@ -97,12 +94,10 @@ def init_db():
 if not os.path.isfile('instance/flaskr.sqlite'):
     init_db()
 
-
 def hashMDP(pw):
     m = hashlib.sha256()
     m.update(pw.encode("utf-8"))
     return m.digest()
-
 
 def dbInsertUser(user, passw, firstname, name):
     db = get_db()
@@ -112,7 +107,6 @@ def dbInsertUser(user, passw, firstname, name):
         (user, hashMDP(passw), name, firstname),
     )
     db.commit()
-
 
 def dbInsertTask(name, desc, ownerId):
     db = get_db()
