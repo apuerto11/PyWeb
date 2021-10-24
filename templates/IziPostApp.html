@@ -8,6 +8,7 @@
 </head>
 
 <body class="bg-dark">
+    <!-- header -->
     <header class="p-3 bg-dark text-white">
         <div class="container">
           <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
@@ -16,9 +17,9 @@
             </a>
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-              <li><a href="/" class="nav-link px-2 text-secondary">Accueil</a></li>
+              <li><a href="{{ url_for('index') }}" class="nav-link px-2 text-white">Accueil</a></li>
               <li><a href="{{ url_for('about') }}" class="nav-link px-2 text-white">A propos</a></li>
-              <li><a href="{{ url_for('showApp') }}" class="nav-link px-2 text-white">Aperçu</a></li>
+              <li><a href="#" class="nav-link px-2 text-secondary">Aperçu</a></li>
             </ul>
     
             <div class="text-end">
@@ -29,8 +30,8 @@
         </div>
       </header>
       <hr class="mt-1 mb-3 bg-secondary">
+      <!-- main App -->
       <main class="text-center text-white">
-        
 
       </main>
 </body>

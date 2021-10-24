@@ -28,8 +28,8 @@ titre = "IziPost"
 @app.route("/")
 def index():
     # if "username" in session:
-    #     
     return render_template("index.html", title=titre)
+        
 ### about HTML ###
 @app.route("/about")
 def about():
@@ -42,6 +42,11 @@ def showLoginForm():
 @app.route("/signupForm")
 def showSignUpForm():
    return render_template('signupForm.html',title=titre)
+
+### Application en elle meme (visible dans le header pour raison de developpement)###
+@app.route("/iziPostApp")
+def showApp():
+    return render_template('iziPostApp.html', title=titre)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
