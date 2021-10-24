@@ -1,6 +1,9 @@
 import sqlite3
 import click
 import os
+from flask.cli import with_appcontext
+from flask.helpers import flash
+
 
 from flask import (
     Flask,
@@ -11,10 +14,67 @@ from flask import (
     current_app,
     session,
 )
-from flask.cli import with_appcontext
-from flask.helpers import flash
 
 app = Flask(__name__)
+titre = "IziPost"
+
+
+
+# def login():
+#     error=None
+#     if request.method == 'POST':
+#         if valid_login(request.form['username'],
+#         request.form['password']):
+#             return
+
+
+@app.route("/")
+def index():
+    # if "username" in session:
+    #     
+    return render_template("index.html", title=titre)
+
+@app.route("/about")
+def about():
+    return render_template('about.html',title=titre)
+
+@app.route("/loginForm")
+def showLoginForm():
+   return render_template('loginForm.html',title=titre)
+
+@app.route("/signupForm")
+def showSignUpForm():
+   return render_template('signupForm.html',title=titre)
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        db = get_db()
+        error = None
+        user = db.execute(
+            "SELECT * FROM users WHERE username = ?", (username,)
+        ).fetchone()
+        if user is None:
+            error = "Incorrect username"
+        elif not hashMDP(user["password"], password):
+            error = "Incorrect password"
+
+        if error is None:
+            session.clear()
+            session["user_id"] = user["id"]
+            return redirect(url_for("index"))
+
+        flash(error)
+
+    return render_template("index.html", tittle=titre)
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("index"))
 
 if not os.path.exists('instance'):
     os.makedirs('instance')
@@ -62,64 +122,6 @@ def dbInsertTask(name, desc, ownerId):
         (name, desc, ownerId),
     )
     db.commit()
-
-
-# def login():
-#     error=None
-#     if request.method == 'POST':
-#         if valid_login(request.form['username'],
-#         request.form['password']):
-#             return
-titre = "IziPost"
-
-@app.route("/")
-def index(name=None):
-    if "username" in session:
-        return render_template("index.html", tittle=titre)
-
-
-@app.route("/about")
-def about():
-    return render_template('about.html',title=titre)
-
-@app.route("/loginForm")
-def showLoginForm():
-   return render_template('loginForm.html',title=titre)
-
-@app.route("/signupForm")
-def showSignUpForm():
-   return render_template('signupForm.html',title=titre)
-
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        db = get_db()
-        error = None
-        user = db.execute(
-            "SELECT * FROM users WHERE username = ?", (username,)
-        ).fetchone()
-        if user is None:
-            error = "Incorrect username"
-        elif not hashMDP(user["password"], password):
-            error = "Incorrect password"
-
-        if error is None:
-            session.clear()
-            session["user_id"] = user["id"]
-            return redirect(url_for("index"))
-
-        flash(error)
-
-    return render_template("index.html", tittle=titre)
-
-
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect(url_for("index"))
-
 
 def valid_login(username, password):
     error = "identifiant ou mot de passe invalide"
