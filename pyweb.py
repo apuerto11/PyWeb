@@ -1,9 +1,10 @@
+"""IziPost main module"""
+# import click
 import sqlite3
-import click
 import os
-import random
 import hashlib
-from flask.cli import with_appcontext
+
+# from flask.cli import with_appcontext
 from flask.helpers import flash
 from flask import (
     Flask,
@@ -11,114 +12,100 @@ from flask import (
     url_for,
     redirect,
     request,
-    current_app,
+    # current_app,
     session,
 )
 
 app = Flask(__name__)
-app.secret_key = "t\xdd\xe7\xe2\xda\xa2\xc0^\xd7%\x19t`\xfeg\x1e\xbe \x87'\x1a\xdbx8\x9c\x86\xed\xc4C\xa5\x81\xaf"
+app.secret_key = "t\xdd\xe7\xe2\xda\xa2\xc0^\xd7%\x19t`\xfeg\x1e\xbe"
 
-titre = "IziPost"
+TITRE = "IziPost"
 
 if not os.path.exists("instance"):
     os.makedirs("instance")
 
 
-def get_db():
-    """Get DB"""
-    db = sqlite3.connect(
+def get_database():
+    """Get database"""
+    database = sqlite3.connect(
         os.path.join(app.instance_path, "flaskr.sqlite"),
         detect_types=sqlite3.PARSE_DECLTYPES,
     )
-    db.row_factory = sqlite3.Row
+    database.row_factory = sqlite3.Row
 
-    return db
+    return database
 
 
-def init_db():
-    """Initialization of DB"""
-    db = get_db()
+def init_database():
+    """Initialization of database"""
+    database = get_database()
 
-    with app.open_resource("schema.sql") as f:
-        db.executescript(f.read().decode("utf8"))
+    with app.open_resource("schema.sql") as file:
+        database.executescript(file.read().decode("utf8"))
 
 
 if not os.path.isfile("instance/flaskr.sqlite"):
-    init_db()
+    init_database()
 
 
-def hashMDP(pw):
+def hash_mdp(password):
     """Encrypt password
 
     Keyword arguments:
     pw -- Password to encrypt as string
     """
-    m = hashlib.sha256()
-    m.update(pw.encode("utf-8"))
-    return m.digest()
+    not_hashed = hashlib.sha256()
+    not_hashed.update(password.encode("utf-8"))
+    return not_hashed.digest()
 
 
-def dbInsertUser(user, passw, firstname, name):
-    """Creation of user profile
-
-    Keyword arguments:
-    user -- username as string
-    passw -- Unencrypted password as string
-    firstname -- firstname of the user as string
-    name -- lastname of the user as string
-    """
-    db = get_db()
-
-    db.execute(
-        "INSERT INTO users (username, password, firstname, name) VALUES (?, ?, ?, ?)",
-        (user, hashMDP(passw), name, firstname),
-    )
-    db.commit()
-
-
-def dbInsertTask(name, desc, ownerId):
-    """Insert user task in DB
+def database_insert_task(name, desc, owner_id):
+    """Insert user task in database
 
     Keyword arguments:
     name -- lastname of the user as string
     desc -- description of the task
-    ownerID -- The ID of the owner"""
-    db = get_db()
+    owner_id -- The ID of the owner"""
+    database = get_database()
 
-    db.execute(
+    database.execute(
         "INSERT INTO tasks (name, description, owner) VALUES (?, ?, ?)",
-        (name, desc, ownerId),
+        (name, desc, owner_id),
     )
-    db.commit()
+    database.commit()
 
 
 if not os.path.exists("instance"):
     os.makedirs("instance")
 
 if not os.path.isfile("instance/flaskr.sqlite"):
-    init_db()
+    init_database()
 
 ### Index HTML ###
 @app.route("/")
 def index():
+    """Index routing"""
     # if "username" in session:
-    return render_template("index.html", title=titre)
+    return render_template("index.html", title=TITRE)
 
 
 ### about HTML ###
 @app.route("/about")
 def about():
-    return render_template("about.html", title=titre)
+    """About routing"""
+    return render_template("about.html", title=TITRE)
 
 
 ### Application en elle meme (visible dans le header pour raison de developpement)###
 @app.route("/iziPostApp")
-def showApp():
-    return render_template("iziPostApp.html", title=titre)
+def show_app():
+    """App routing"""
+    return render_template("iziPostApp.html", title=TITRE)
 
 
 @app.route("/register", methods=("GET", "POST"))
 def register():
+    """Register routing"""
     print("Register method called")
     if request.method == "POST":
 
@@ -127,7 +114,7 @@ def register():
         firstname = request.form["firstname"]
         lastname = request.form["lastname"]
 
-        db = get_db()
+        database = get_database()
         error = None
 
         if not username:
@@ -137,35 +124,35 @@ def register():
 
         if error is None:
             try:
-                db.execute(
+                database.execute(
                     "INSERT INTO users (username, password, firstname, name) VALUES (?, ?, ?, ?)",
-                    (username, hashMDP(password), firstname, lastname),
+                    (username, hash_mdp(password), firstname, lastname),
                 )
-                db.commit()
-            except db.IntegrityError:
+                database.commit()
+            except database.IntegrityError:
                 error = f"User{username} is already registered."
             else:
                 return redirect(url_for("login"))
 
         flash(error)
         return redirect(url_for("register"))
-    else:
-        return render_template("signupForm.html", title=titre)
+    return render_template("signupForm.html", title=TITRE)
 
 
 @app.route("/login", methods=("GET", "POST"))
 def login():
+    """Login routing"""
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        db = get_db()
+        database = get_database()
         error = None
-        user = db.execute(
+        user = database.execute(
             "SELECT * FROM users WHERE username = ?", (username,)
         ).fetchone()
         if user is None:
             error = "Incorrect username"
-        elif not hashMDP(password) == user["password"]:
+        elif not hash_mdp(password) == user["password"]:
             error = "Incorrect password"
 
         if error is None:
@@ -175,20 +162,13 @@ def login():
 
         flash(error)
         return redirect(url_for("login"))
-    else:
-        return render_template("loginForm.html", title=titre)
+    return render_template("loginForm.html", title=TITRE)
 
 
 @app.route("/logout")
 def logout():
+    """Logout routing"""
     session.clear()
-    return redirect(url_for("index"))
-
-
-@app.route("/dbinsert")
-def insertUser():
-    dbInsertUser("user", "password", "firstname", "name")
-    dbInsertTask("Test", "TESTETETETETET", 1)
     return redirect(url_for("index"))
 
 
