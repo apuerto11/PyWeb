@@ -20,7 +20,7 @@
           </div>
         
         <h1 class="h3 mb-3 fw-normal">Connectez-vous</h1>
-    
+        
         <div class="form-floating w-50 m-auto h-auto mt-2">
           <input name="username" type="text" class="form-control">
           <label for="floatingInput" class="text-black">Pseudo</label>
@@ -33,6 +33,15 @@
         <button class="btn btn-lg btn-success w-25 mt-2" type="submit">Se connecter</button>
       </form>
       <a href="{{url_for('register')}}" class="text-decoration-none text-white">Je n'ai pas de compte...</a>
+      {% block body %}
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {%for message in messages%}
+             <div class="container text-center"><p>{{message}}</p></div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+      {% endblock %}
     </main>
 
     <script>
