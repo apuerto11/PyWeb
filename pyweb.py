@@ -187,8 +187,8 @@ def register():
             
         flash(error)
         return redirect(url_for("register"))
-
-    return render_template("signupForm.html", title=titre)    
+    else:
+        return render_template("signupForm.html", title=titre)    
 
 @app.route("/logout")
 def logout():
