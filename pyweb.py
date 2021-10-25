@@ -30,7 +30,6 @@ def get_db():
 
     return db
 
-
 def init_db():
     db = get_db()
 
@@ -67,12 +66,6 @@ def dbInsertTask(name, desc, ownerId):
     )
     db.commit()
 
-# def login():
-#     error=None
-#     if request.method == 'POST':
-#         if valid_login(request.form['username'],
-#         request.form['password']):
-#             return
 
 ###################### Route ##########################
 ### Index HTML ###
@@ -142,15 +135,10 @@ def logout():
 ###################### End Route ##########################
 
 
-def valid_login(username, password):
-    error = "identifiant ou mot de passe invalide"
+
+@app.route("/dbisert")
+def insertDB():
     db = get_db()
-    if username == db.execute(
-        "Select username from users where username = {{username}} and password = {{password}}"
-    ):
-        return username
-    else:
-        return error
 
     db.execute(
         "INSERT INTO users (username, password, firstname, name) VALUES (?, ?, ?, ?)",
