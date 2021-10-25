@@ -117,7 +117,6 @@ def showLoginForm():
 def showSignUpForm():
     return render_template("signupForm.html", title=titre)
 
-
 ### Application en elle meme (visible dans le header pour raison de developpement)###
 @app.route("/iziPostApp")
 def showApp():
@@ -125,11 +124,14 @@ def showApp():
 
 @app.route('/register', methods=('GET', 'POST'))
 def register():
+    print('Register method called')
     if request.method == 'POST':
+
         username = request.form['username']
         password = request.form['password']
         firstname = request.form['firstname']
         lastname = request.form['lastname']
+
         db = get_db()
         error = None
 
@@ -156,6 +158,7 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -183,7 +186,7 @@ def logout():
     session.clear()
     return redirect(url_for("index"))
 
-@app.route("/dbisert")
+@app.route("/dbinsert")
 def insertUser():
     dbInsertUser("user", "password", "firstname", "name")
     dbInsertTask("Test", "TESTETETETETET", 1)

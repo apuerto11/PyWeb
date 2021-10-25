@@ -7,7 +7,7 @@
 </head>
 <body class="text-center bg-dark text-white center-block">
     <main class="form-signin mt-5">
-      <form method="POST">
+      <form method="POST" action="{{url_for('login')}}">
           <div class="container ">
             <button type="button" class="btn btn-success d-flex" onclick="goBack()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
@@ -22,15 +22,15 @@
         <h1 class="h3 mb-3 fw-normal">Connectez-vous</h1>
     
         <div class="form-floating w-50 m-auto h-auto mt-2">
-          <input name="username" type="text" class="form-control>
+          <input name="username" type="text" class="form-control">
           <label for="floatingInput" class="text-black">Pseudo</label>
         </div>
         <div class="form-floating w-50 m-auto h-auto mt-2">
           <input name="password" type="password" class="form-control">
           <label for="floatingPassword" class="text-black">Mot de passe</label>
         </div>
-    
-        <button class="btn btn-lg btn-success w-50 mt-2" type="submit" onclick="{{url_for('register')}}">Se connecter</button>
+
+        <button class="btn btn-lg btn-success w-25 mt-2" type="submit">Se connecter</button>
       </form>
       <a href="{{url_for('showSignUpForm')}}" class="text-decoration-none text-white">Je n'ai pas de compte...</a>
     </main>
