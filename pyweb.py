@@ -162,7 +162,7 @@ def login():
         ).fetchone()
         if user is None:
             error = "Incorrect username"
-        elif not hashMDP(user["password"], password):
+        elif not hashMDP(user["password"]):
             error = "Incorrect password"
 
         if error is None:
