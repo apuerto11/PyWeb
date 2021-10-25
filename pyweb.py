@@ -107,20 +107,7 @@ def index():
 ### about HTML ###
 @app.route("/about")
 def about():
-<<<<<<< HEAD
     return render_template("about.html", title=titre)
-=======
-    return render_template('about.html',title=titre)
-### Connection page HTML ###
-@app.route("/loginForm")
-def showLoginForm():
-   return render_template('loginForm.html',title=titre)
-### Sign-Up Page HTML ###
-@app.route("/signupForm")
-def showSignUpForm():
-    return render_template("signupForm.html", title=titre)
-
->>>>>>> d3ce592eb3d88d663af8c28bea7ca10bcf114dce
 
 ### Application en elle meme (visible dans le header pour raison de developpement)###
 @app.route("/iziPostApp")
@@ -190,30 +177,6 @@ def register():
 def logout():
     session.clear()
     return redirect(url_for("index"))
-
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        db = get_db()
-        error = None
-        user = db.execute(
-            "SELECT * FROM users WHERE username = ?", (username,)
-        ).fetchone()
-        if user is None:
-            error = "Incorrect username"
-        elif not hashMDP(user["password"], password):
-            error = "Incorrect password"
-
-        if error is None:
-            session.clear()
-            session["user_id"] = user["id"]
-            return redirect(url_for("index"))
-
-        flash(error)
-
-    return render_template("index.html", title=titre)
 
 @app.route("/logout")
 def logout():
