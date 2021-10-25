@@ -22,6 +22,7 @@ if not os.path.exists("instance"):
 
 
 def get_db():
+    """Get DB"""
     db = sqlite3.connect(
         os.path.join(app.instance_path, "flaskr.sqlite"),
         detect_types=sqlite3.PARSE_DECLTYPES,
@@ -31,6 +32,7 @@ def get_db():
     return db
 
 def init_db():
+    """Initialization of DB"""
     db = get_db()
 
     with app.open_resource("schema.sql") as f:
@@ -42,12 +44,14 @@ if not os.path.isfile("instance/flaskr.sqlite"):
 
 
 def hashMDP(pw):
+    """Encrypt password"""
     m = hashlib.sha256()
     m.update(pw.encode("utf-8"))
     return m.digest()
 
 
 def dbInsertUser(user, passw, firstname, name):
+    """Creation of user profile"""
     db = get_db()
 
     db.execute(
@@ -58,6 +62,7 @@ def dbInsertUser(user, passw, firstname, name):
 
 
 def dbInsertTask(name, desc, ownerId):
+    """Insert user task in DB"""
     db = get_db()
 
     db.execute(
