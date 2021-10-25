@@ -37,7 +37,7 @@
         {% with messages = get_flashed_messages() %}
           {% if messages %}
             {%for message in messages%}
-             <div class="container text-center"><p>{{message}}</p></div>
+             <div class="container text-center"><h3 class="text-danger">{{message}}</h3></div>
             {% endfor %}
           {% endif %}
         {% endwith %}

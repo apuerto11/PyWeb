@@ -100,7 +100,7 @@ def about():
 @app.route("/iziPostApp")
 def show_app():
     """App routing"""
-    return render_template("iziPostApp.html", title=TITRE)
+    return render_template("IziPostApp.html", title=TITRE)
 
 
 @app.route("/register", methods=("GET", "POST"))
@@ -130,7 +130,7 @@ def register():
                 )
                 database.commit()
             except database.IntegrityError:
-                error = f"User{username} is already registered."
+                error = "User{username} is already registered."
             else:
                 return redirect(url_for("login"))
 
@@ -156,7 +156,6 @@ def login():
             error = "Incorrect password"
 
         if error is None:
-            error="Connexion réussi"
             session.clear()
             session["username"] = user["username"]
             return redirect(url_for("index"))
@@ -171,6 +170,5 @@ def logout():
     """Logout routing"""
     session.clear()
     return redirect(url_for("index"))
-
 
 ###################### End Route ##########################
