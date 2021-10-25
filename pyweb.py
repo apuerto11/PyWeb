@@ -76,12 +76,22 @@ def database_insert_task(name, desc, owner_id):
 
 
 def database_update_task(task_id, name, description, status):
+    """Update a task in the database"""
     database = get_database()
     database.execute(
         "UPDATE tasks SET name = ?, description = ?, status = ? WHERE id = ?",
         (name, description, status, task_id),
         database.commit(),
     )
+
+def database_fetch_tasks(username):
+    """get all tasks from a user"""
+    database = get_database()
+    tasks = database.execute(
+        "SELECT * FROM tasks t INNER JOIN users u on t.owner = u.id WHERE u.username = ?",
+        (username)
+    ).fetchall()
+    return tasks
 
 
 if not os.path.exists("instance"):
