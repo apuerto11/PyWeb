@@ -93,6 +93,15 @@ def database_fetch_tasks(username):
     ).fetchall()
     return tasks
 
+def delete(task_id):
+    if request.method =="POST":
+        database = get_database()
+        database.execute(
+        "DELETE FROM tasks WHERE id = ?", (task_id,)
+        )
+        database.commit()
+    return redirect(url_for("show_tasks"))
+
 
 if not os.path.exists("instance"):
     os.makedirs("instance")
@@ -190,14 +199,5 @@ def logout():
     """Logout routing"""
     session.clear()
     return redirect(url_for("index"))
-
-@app.route("/delete_task", methods=("POST"))
-def delete(id):
-    if request.method =="POST":
-        db = get_db()
-        db.execute(
-            "DELETE FROM tasks WHERE id = ?", (id,)
-        ).fetchone()
-        return redirect(url_for("show_tasks"))
 
 ###################### End Route ##########################
