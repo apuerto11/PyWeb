@@ -75,6 +75,51 @@ def database_insert_task(name, desc, owner_id):
     database.commit()
 
 
+def database_update_task(task_id, name, description, status):
+    database = get_database()
+    if name and description and status:
+        database.execute(
+            "UPDATE tasks SET name = ?, description = ?, status = ? WHERE id = ?",
+            (name, description, status, task_id),
+        )
+
+    elif name and status:
+        database.execute(
+            "UPDATE tasks SET name = ?, status = ? WHERE id = ?",
+            (name, description, status, task_id),
+        )
+
+    elif name and description:
+        database.execute(
+            "UPDATE tasks SET name = ?, description = ? WHERE id = ?",
+            (name, description, status, task_id),
+        )
+    elif description and status:
+        database.execute(
+            "UPDATE tasks SET description = ?, status = ? WHERE id = ?",
+            (name, description, status, task_id),
+        )
+    elif name:
+        database.execute(
+            "UPDATE tasks SET name = ? WHERE id = ?",
+            (name, description, status, task_id),
+        )
+
+    elif description:
+        database.execute(
+            "UPDATE tasks SET description = ? WHERE id = ?",
+            (name, description, status, task_id),
+        )
+
+    elif status:
+        database.execute(
+            "UPDATE tasks SET status = ? WHERE id = ?",
+            (name, description, status, task_id),
+        )
+
+    database.commit()
+
+
 if not os.path.exists("instance"):
     os.makedirs("instance")
 
@@ -156,12 +201,12 @@ def login():
             error = "Incorrect password"
 
         if error is None:
-            error="Connexion réussi"
+            error = "Connexion réussi"
             session.clear()
             session["username"] = user["username"]
             return redirect(url_for("index"))
 
-        flash(error,"info")
+        flash(error, "info")
         return redirect(url_for("login"))
     return render_template("loginForm.html", title=TITRE)
 
@@ -171,6 +216,11 @@ def logout():
     """Logout routing"""
     session.clear()
     return redirect(url_for("index"))
+
+
+@app.route("/subtask")
+def subtask():
+    database_update_task(2, "zargtaert", "ararer", 3)
 
 
 ###################### End Route ##########################
