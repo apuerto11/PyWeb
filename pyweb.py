@@ -22,6 +22,7 @@ if not os.path.exists("instance"):
 
 
 def get_db():
+    """Get DB"""
     db = sqlite3.connect(
         os.path.join(app.instance_path, "flaskr.sqlite"),
         detect_types=sqlite3.PARSE_DECLTYPES,
@@ -31,6 +32,7 @@ def get_db():
     return db
 
 def init_db():
+    """Initialization of DB"""
     db = get_db()
 
     with app.open_resource("schema.sql") as f:
@@ -42,12 +44,14 @@ if not os.path.isfile("instance/flaskr.sqlite"):
 
 
 def hashMDP(pw):
+    """Encrypt password"""
     m = hashlib.sha256()
     m.update(pw.encode("utf-8"))
     return m.digest()
 
 
 def dbInsertUser(user, passw, firstname, name):
+    """Creation of user profile"""
     db = get_db()
 
     db.execute(
@@ -58,6 +62,7 @@ def dbInsertUser(user, passw, firstname, name):
 
 
 def dbInsertTask(name, desc, ownerId):
+    """Insert user task in DB"""
     db = get_db()
 
     db.execute(
@@ -66,19 +71,56 @@ def dbInsertTask(name, desc, ownerId):
     )
     db.commit()
 
+if not os.path.exists('instance'):
+    os.makedirs('instance')
 
-###################### Route ##########################
+def get_db():
+    db = sqlite3.connect(
+        os.path.join(app.instance_path, 'flaskr.sqlite'),
+        detect_types=sqlite3.PARSE_DECLTYPES
+    )
+    db.row_factory = sqlite3.Row
+
+    return db
+
+def init_db():
+    db = get_db()
+
+    with app.open_resource('schema.sql') as f:
+        db.executescript(f.read().decode('utf8'))
+
+if not os.path.isfile('instance/flaskr.sqlite'):
+    init_db()
+
+def hashMDP(pw):
+    m = hashlib.sha256()
+    m.update(pw.encode("utf-8"))
+    return m.digest()
+
+
 ### Index HTML ###
 @app.route("/")
 def index():
     # if "username" in session:
     return render_template("index.html", title=titre)
-
-
+        
 ### about HTML ###
 @app.route("/about")
 def about():
+<<<<<<< HEAD
     return render_template("about.html", title=titre)
+=======
+    return render_template('about.html',title=titre)
+### Connection page HTML ###
+@app.route("/loginForm")
+def showLoginForm():
+   return render_template('loginForm.html',title=titre)
+### Sign-Up Page HTML ###
+@app.route("/signupForm")
+def showSignUpForm():
+    return render_template("signupForm.html", title=titre)
+
+>>>>>>> d3ce592eb3d88d663af8c28bea7ca10bcf114dce
 
 ### Application en elle meme (visible dans le header pour raison de developpement)###
 @app.route("/iziPostApp")
@@ -149,15 +191,38 @@ def logout():
     session.clear()
     return redirect(url_for("index"))
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        db = get_db()
+        error = None
+        user = db.execute(
+            "SELECT * FROM users WHERE username = ?", (username,)
+        ).fetchone()
+        if user is None:
+            error = "Incorrect username"
+        elif not hashMDP(user["password"], password):
+            error = "Incorrect password"
 
-###################### End Route ##########################
+        if error is None:
+            session.clear()
+            session["user_id"] = user["id"]
+            return redirect(url_for("index"))
 
+        flash(error)
 
-# return render_template('signupForm.html',title=titre)
+    return render_template("index.html", title=titre)
 
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("index"))
 
 @app.route("/dbisert")
 def insertUser():
     dbInsertUser("user", "password", "firstname", "name")
     dbInsertTask("Test", "TESTETETETETET", 1)
     return redirect(url_for("index"))
+###################### End Route ##########################
