@@ -1,6 +1,7 @@
 import sqlite3
 import click
 import os
+import random
 import hashlib
 from flask.cli import with_appcontext
 from flask.helpers import flash
@@ -15,6 +16,8 @@ from flask import (
 )
 
 app = Flask(__name__)
+app.secret_key = "t\xdd\xe7\xe2\xda\xa2\xc0^\xd7%\x19t`\xfeg\x1e\xbe \x87'\x1a\xdbx8\x9c\x86\xed\xc4C\xa5\x81\xaf"
+
 titre = "IziPost"
 
 if not os.path.exists("instance"):
@@ -162,12 +165,12 @@ def login():
         ).fetchone()
         if user is None:
             error = "Incorrect username"
-        elif not hashMDP(user["password"]):
+        elif not hashMDP(password) == user["password"]:
             error = "Incorrect password"
 
         if error is None:
             session.clear()
-            session["user_id"] = user["id"]
+            session["username"] = user["username"]
             return redirect(url_for("index"))
 
         flash(error)
