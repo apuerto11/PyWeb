@@ -127,6 +127,7 @@ def about():
 @app.route("/iziPostApp")
 def show_app():
     """App routing"""
+    
     return render_template("IziPostApp.html", title=TITRE)
 
 
