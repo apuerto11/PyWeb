@@ -93,7 +93,7 @@ def showSignUpForm():
 def showApp():
     return render_template('iziPostApp.html', title=titre)
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/login", methods=("GET", "POST"))
 def login():
     if request.method == "POST":
         username = request.form["username"]
@@ -115,7 +115,38 @@ def login():
 
         flash(error)
 
-    return render_template("index.html", title=titre) # Pourquoi afficher quand meme l'index ici ?
+    return render_template("index.html", title=titre)
+
+@app.route('/register', methods=('GET', 'POST'))
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        firstname = request.form['firstname']
+        lastname = request.form['lastname']
+        db = get_db()
+        error = None
+
+        if not username:
+            error = 'Username is required.'
+        elif not password:
+            error = 'Password is required.'
+
+        if error is None:
+            try:
+                db.execute(
+                    "INSERT INTO users (username, password, firstname, name) VALUES (?, ?, ?, ?)",
+                    (username, hashMDP(password), firstname, lastname),
+                )
+                db.commit()
+            except db.IntegrityError:
+                error = f'User{username} is already registered.'
+            else:
+                return redirect(url_for("login"))
+            
+        flash(error)
+
+    return redirect(url_for("register"))    
 
 @app.route("/logout")
 def logout():
