@@ -184,6 +184,14 @@ def logout():
     session.clear()
     return redirect(url_for("index"))
 
+@app.route("/delete_task", methods=("POST"))
+def delete(id):
+    if request.method =="POST":
+        db = get_db()
+        db.execute(
+            "DELETE FROM tasks WHERE id = ?", (id,)
+        ).fetchone()
+        return redirect(url_for("show_tasks"))
 
 @app.route("/dbinsert")
 def insertUser():
