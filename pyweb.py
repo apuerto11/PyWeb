@@ -169,11 +169,12 @@ def login():
             error = "Incorrect password"
 
         if error is None:
+            error="Connexion réussi"
             session.clear()
             session["username"] = user["username"]
             return redirect(url_for("index"))
 
-        flash(error)
+        flash(error,"info")
         return redirect(url_for("login"))
     else:
         return render_template("loginForm.html", title=titre)
