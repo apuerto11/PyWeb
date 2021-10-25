@@ -44,17 +44,29 @@ if not os.path.isfile("instance/flaskr.sqlite"):
 
 
 def hashMDP(pw):
-    """Encrypt password"""
+    """Encrypt password
+       
+    Keyword arguments:
+    pw -- Password to encrypt as string
+    """
     m = hashlib.sha256()
     m.update(pw.encode("utf-8"))
     return m.digest()
 
 
 def dbInsertUser(user, passw, firstname, name):
-    """Creation of user profile"""
+    """Creation of user profile
+       
+    Keyword arguments:
+    user -- username as string
+    passw -- Unencrypted password as string
+    firstname -- firstname of the user as string
+    name -- lastname of the user as string
+    """
     db = get_db()
 
     db.execute(
+        
         "INSERT INTO users (username, password, firstname, name) VALUES (?, ?, ?, ?)",
         (user, hashMDP(passw), name, firstname),
     )
@@ -62,7 +74,12 @@ def dbInsertUser(user, passw, firstname, name):
 
 
 def dbInsertTask(name, desc, ownerId):
-    """Insert user task in DB"""
+    """Insert user task in DB
+    
+    Keyword arguments:
+    name -- lastname of the user as string
+    desc -- description of the task
+    ownerID -- The ID of the owner"""
     db = get_db()
 
     db.execute(
