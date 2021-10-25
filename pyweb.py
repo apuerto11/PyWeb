@@ -75,6 +75,33 @@ def database_insert_task(name, desc, owner_id):
     database.commit()
 
 
+def database_update_task(task_id, name, description, status):
+    """Update a task in the database"""
+    database = get_database()
+    database.execute(
+        "UPDATE tasks SET name = ?, description = ?, status = ? WHERE id = ?",
+        (name, description, status, task_id),
+        database.commit(),
+    )
+
+def database_fetch_tasks(username):
+    """get all tasks from a user"""
+    database = get_database()
+    tasks = database.execute(
+        "SELECT * FROM tasks t INNER JOIN users u on t.owner = u.id WHERE u.username = ?",
+        (username)
+    ).fetchall()
+    return tasks
+
+def delete(task_id):
+    if request.method =="POST":
+        database = get_database()
+        database.execute(
+        "DELETE FROM tasks WHERE id = ?", (task_id,)
+        )
+        database.commit()
+
+
 if not os.path.exists("instance"):
     os.makedirs("instance")
 
@@ -156,11 +183,12 @@ def login():
             error = "Incorrect password"
 
         if error is None:
+            error = "Connexion réussi"
             session.clear()
             session["username"] = user["username"]
             return redirect(url_for("index"))
 
-        flash(error,"info")
+        flash(error, "info")
         return redirect(url_for("login"))
     return render_template("loginForm.html", title=TITRE)
 
