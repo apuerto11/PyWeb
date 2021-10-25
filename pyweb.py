@@ -66,8 +66,61 @@ def dbInsertTask(name, desc, ownerId):
     db.commit()
 
 
+if not os.path.exists('instance'):
+    os.makedirs('instance')
+
+def get_db():
+    db = sqlite3.connect(
+        os.path.join(app.instance_path, 'flaskr.sqlite'),
+        detect_types=sqlite3.PARSE_DECLTYPES
+    )
+    db.row_factory = sqlite3.Row
+
+    return db
+
+def init_db():
+    db = get_db()
+
+    with app.open_resource('schema.sql') as f:
+        db.executescript(f.read().decode('utf8'))
+
+if not os.path.isfile('instance/flaskr.sqlite'):
+    init_db()
+
+def hashMDP(pw):
+    m = hashlib.sha256()
+    m.update(pw.encode("utf-8"))
+    return m.digest()
+
+def dbInsertUser(user, passw, firstname, name):
+    db = get_db()
+
+    db.execute(
+        "INSERT INTO users (username, password, firstname, name) VALUES (?, ?, ?, ?)",
+        (user, hashMDP(passw), name, firstname),
+    )
+    db.commit()
+
+def dbInsertTask(name, desc, ownerId):
+    db = get_db()
+
+    db.execute(
+        "INSERT INTO tasks (name, description, owner) VALUES (?, ?, ?)",
+        (name, desc, ownerId),
+    )
+    db.commit()
 
 ###################### Route ##########################
+@app.route("/dbisert")
+def insertDB():
+    db = get_db()
+
+    db.execute(
+        "INSERT INTO users (username, password, firstname, name) VALUES (?, ?, ?, ?)",
+        ("apuerto", "password", "Andrea", "Puerto"),
+    )
+    db.commit()
+
 ### Index HTML ###
 @app.route("/")
 def index():
@@ -121,69 +174,10 @@ def login():
 def logout():
     session.clear()
     return redirect(url_for("index"))
-###################### End Route ##########################
-
-if not os.path.exists('instance'):
-    os.makedirs('instance')
-
-def get_db():
-    db = sqlite3.connect(
-        os.path.join(app.instance_path, 'flaskr.sqlite'),
-        detect_types=sqlite3.PARSE_DECLTYPES
-    )
-    db.row_factory = sqlite3.Row
-
-    return db
-
-def init_db():
-    db = get_db()
-
-    with app.open_resource('schema.sql') as f:
-        db.executescript(f.read().decode('utf8'))
-
-if not os.path.isfile('instance/flaskr.sqlite'):
-    init_db()
-
-def hashMDP(pw):
-    m = hashlib.sha256()
-    m.update(pw.encode("utf-8"))
-    return m.digest()
-
-def dbInsertUser(user, passw, firstname, name):
-    db = get_db()
-
-    db.execute(
-        "INSERT INTO users (username, password, firstname, name) VALUES (?, ?, ?, ?)",
-        (user, hashMDP(passw), name, firstname),
-    )
-    db.commit()
-
-def dbInsertTask(name, desc, ownerId):
-    db = get_db()
-
-    db.execute(
-        "INSERT INTO tasks (name, description, owner) VALUES (?, ?, ?)",
-        (name, desc, ownerId),
-    )
-    db.commit()
-
-
-@app.route("/dbisert")
-def insertDB():
-    db = get_db()
-
-    db.execute(
-        "INSERT INTO users (username, password, firstname, name) VALUES (?, ?, ?, ?)",
-        ("apuerto", "password", "Andrea", "Puerto"),
-    )
-    db.commit()
-
-
-# return render_template('signupForm.html',title=titre)
-
 
 @app.route("/dbisert")
 def insertUser():
     dbInsertUser("user", "password", "firstname", "name")
     dbInsertTask("Test", "TESTETETETETET", 1)
     return redirect(url_for("index"))
+###################### End Route ##########################
