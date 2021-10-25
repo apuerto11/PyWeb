@@ -135,18 +135,6 @@ def logout():
 ###################### End Route ##########################
 
 
-
-@app.route("/dbisert")
-def insertDB():
-    db = get_db()
-
-    db.execute(
-        "INSERT INTO users (username, password, firstname, name) VALUES (?, ?, ?, ?)",
-        ("apuerto", "password", "Andrea", "Puerto"),
-    )
-    db.commit()
-
-
 # return render_template('signupForm.html',title=titre)
 
 
