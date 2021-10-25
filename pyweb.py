@@ -1,6 +1,7 @@
 import sqlite3
 import click
 import os
+import hashlib
 from flask.cli import with_appcontext
 from flask.helpers import flash
 from flask import (
@@ -65,7 +66,6 @@ def dbInsertTask(name, desc, ownerId):
     )
     db.commit()
 
-
 if not os.path.exists('instance'):
     os.makedirs('instance')
 
@@ -92,34 +92,6 @@ def hashMDP(pw):
     m.update(pw.encode("utf-8"))
     return m.digest()
 
-def dbInsertUser(user, passw, firstname, name):
-    db = get_db()
-
-    db.execute(
-        "INSERT INTO users (username, password, firstname, name) VALUES (?, ?, ?, ?)",
-        (user, hashMDP(passw), name, firstname),
-    )
-    db.commit()
-
-def dbInsertTask(name, desc, ownerId):
-    db = get_db()
-
-    db.execute(
-        "INSERT INTO tasks (name, description, owner) VALUES (?, ?, ?)",
-        (name, desc, ownerId),
-    )
-    db.commit()
-
-###################### Route ##########################
-@app.route("/dbisert")
-def insertDB():
-    db = get_db()
-
-    db.execute(
-        "INSERT INTO users (username, password, firstname, name) VALUES (?, ?, ?, ?)",
-        ("apuerto", "password", "Andrea", "Puerto"),
-    )
-    db.commit()
 
 ### Index HTML ###
 @app.route("/")
@@ -146,6 +118,37 @@ def showSignUpForm():
 def showApp():
     return render_template('iziPostApp.html', title=titre)
 
+@app.route('/register', methods=('GET', 'POST'))
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        firstname = request.form['firstname']
+        lastname = request.form['lastname']
+        db = get_db()
+        error = None
+
+        if not username:
+            error = 'Username is required.'
+        elif not password:
+            error = 'Password is required.'
+
+        if error is None:
+            try:
+                db.execute(
+                    "INSERT INTO users (username, password, firstname, name) VALUES (?, ?, ?, ?)",
+                    (username, hashMDP(password), firstname, lastname),
+                )
+                db.commit()
+            except db.IntegrityError:
+                error = f'User{username} is already registered.'
+            else:
+                return redirect(url_for("login"))
+            
+        flash(error)
+
+    return redirect(url_for("register"))
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -168,7 +171,7 @@ def login():
 
         flash(error)
 
-    return render_template("index.html", title=titre) # Pourquoi afficher quand meme l'index ici ?
+    return render_template("index.html", title=titre)
 
 @app.route("/logout")
 def logout():
