@@ -124,15 +124,7 @@ def index():
 ### about HTML ###
 @app.route("/about")
 def about():
-    return render_template('about.html',title=titre)
-### Connection page HTML ###
-@app.route("/loginForm")
-def showLoginForm():
-   return render_template('loginForm.html',title=titre)
-### Sign-Up Page HTML ###
-@app.route("/signupForm")
-def showSignUpForm():
-    return render_template("signupForm.html", title=titre)
+    return render_template("about.html", title=titre)
 
 ### Application en elle meme (visible dans le header pour raison de developpement)###
 @app.route("/iziPostApp")
