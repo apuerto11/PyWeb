@@ -162,12 +162,12 @@ def register():
                 return redirect(url_for("login"))
             
         flash(error)
+        return redirect(url_for("register"))
+    else:
+        return render_template("signupForm.html", title=titre)    
 
-    return redirect(url_for("register"))
-
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/login", methods=("GET", "POST"))
 def login():
-    
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -187,8 +187,9 @@ def login():
             return redirect(url_for("index"))
 
         flash(error)
-
-    return render_template("index.html", title=titre)
+        return redirect(url_for("login"))
+    else:
+        return render_template("loginForm.html", title=titre)
 
 @app.route("/logout")
 def logout():
