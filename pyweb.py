@@ -100,7 +100,6 @@ def delete(task_id):
         "DELETE FROM tasks WHERE id = ?", (task_id,)
         )
         database.commit()
-    return redirect(url_for("show_tasks"))
 
 
 if not os.path.exists("instance"):
