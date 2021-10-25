@@ -19,7 +19,9 @@
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
               <li><a href="{{ url_for('index') }}" class="nav-link px-2 text-white">Accueil</a></li>
               <li><a href="{{ url_for('about') }}" class="nav-link px-2 text-white">A propos</a></li>
-              <li><a href="#" class="nav-link px-2 text-secondary">Aperçu</a></li>
+              {% if session["username"] %}
+              <li><a href="#" class="nav-link px-2 text-secondary">Mes IziPosts</a></li>
+              {%endif%}
             </ul>
     
             {% if session["username"] %}
@@ -41,15 +43,17 @@
       <main class="text-center text-white">
         
         <div class="container-fluid d-flex-inline rounded mt-2">
-          <a href="" class="link-light text-decoration-none">Ajouter
+          <h3>Mes IziPosts</h3>
+          <a href="" class="link-light text-decoration-none">Ajouter un IziPost
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
               <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
             </svg>
           </a>
         </div>
-        <hr class="m-0 bg-white mt-2">
-        <div class="container-fluid d-flex">
 
+        <hr class="m-0 bg-white mt-2">
+        
+        <div class="container-fluid d-flex">
           <div class="card bg-secondary text-white border-success p-3 m-3 border-3">
             <div class="content">
               <h5>Titre</h6>

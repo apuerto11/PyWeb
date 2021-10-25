@@ -183,10 +183,9 @@ def login():
             error = "Incorrect password"
 
         if error is None:
-            error = "Connexion réussi"
             session.clear()
             session["username"] = user["username"]
-            return redirect(url_for("index"))
+            return redirect(url_for("show_app"))
 
         flash(error, "info")
         return redirect(url_for("login"))
