@@ -80,19 +80,6 @@ def index():
 def about():
     return render_template("about.html", title=titre)
 
-
-### Connection page HTML ###
-@app.route("/loginForm")
-def showLoginForm():
-    return render_template("loginForm.html", title=titre)
-
-
-### Sign-Up Page HTML ###
-@app.route("/signupForm")
-def showSignUpForm():
-    return render_template("signupForm.html", title=titre)
-
-
 ### Application en elle meme (visible dans le header pour raison de developpement)###
 @app.route("/iziPostApp")
 def showApp():
@@ -120,8 +107,10 @@ def login():
             return redirect(url_for("index"))
 
         flash(error)
+        return redirect(url_for("login"))
+    else:
 
-    return render_template("index.html", title=titre)
+        return render_template("loginForm.html", title=titre)
 
 @app.route('/register', methods=('GET', 'POST'))
 def register():
@@ -151,8 +140,9 @@ def register():
                 return redirect(url_for("login"))
             
         flash(error)
+        return redirect(url_for("register"))
 
-    return redirect(url_for("register"))    
+    return render_template("signupForm.html", title=titre)    
 
 @app.route("/logout")
 def logout():
