@@ -58,8 +58,7 @@ def hash_mdp(password):
     not_hashed.update(password.encode("utf-8"))
     return not_hashed.digest()
 
-
-def database_insert_task(name, desc, owner_id):
+def database_insert_task(name, desc, owner_id, status):
     """Insert user task in database
 
     Keyword arguments:
@@ -69,8 +68,8 @@ def database_insert_task(name, desc, owner_id):
     database = get_database()
 
     database.execute(
-        "INSERT INTO tasks (name, description, owner) VALUES (?, ?, ?)",
-        (name, desc, owner_id),
+        "INSERT INTO tasks (name, description, status, owner) VALUES (?, ?, ?, ?)",
+        (name, desc, status, owner_id),
     )
     database.commit()
 
@@ -186,6 +185,7 @@ def login():
         if error is None:
             session.clear()
             session["username"] = user["username"]
+            session["id"] = user["id"]
             return redirect(url_for("show_app"))
 
         flash(error, "info")
