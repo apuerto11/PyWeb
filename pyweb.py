@@ -58,7 +58,7 @@ def hash_mdp(password):
     not_hashed.update(password.encode("utf-8"))
     return not_hashed.digest()
 
-def database_insert_task(name, desc, owner_id):
+def database_insert_task(name, desc, owner_id, status):
     """Insert user task in database
 
     Keyword arguments:
@@ -68,8 +68,8 @@ def database_insert_task(name, desc, owner_id):
     database = get_database()
 
     database.execute(
-        "INSERT INTO tasks (name, description, owner) VALUES (?, ?, ?)",
-        (name, desc, owner_id),
+        "INSERT INTO tasks (name, description, status, owner) VALUES (?, ?, ?, ?)",
+        (name, desc, status, owner_id),
     )
     database.commit()
 
@@ -83,21 +83,22 @@ def database_update_task(task_id, name, description, status):
         database.commit(),
     )
 
+
 def database_fetch_tasks(username):
     """get all tasks from a user"""
     database = get_database()
     tasks = database.execute(
         "SELECT * FROM tasks t INNER JOIN users u on t.owner = u.id WHERE u.username = ?",
-        (username)
+        (username),
     ).fetchall()
     return tasks
 
-def delete(task_id):
-    if request.method =="POST":
+
+def database_delete_tasks(task_id):
+    """delete a task with a specific ID"""
+    if request.method == "POST":
         database = get_database()
-        database.execute(
-        "DELETE FROM tasks WHERE id = ?", (task_id,)
-        )
+        database.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
         database.commit()
 
 
@@ -187,6 +188,7 @@ def login():
         if error is None:
             session.clear()
             session["username"] = user["username"]
+            session["id"] = user["id"]
             return redirect(url_for("show_app"))
 
         flash(error)
@@ -200,5 +202,6 @@ def logout():
     """Logout routing"""
     session.clear()
     return redirect(url_for("index"))
+
 
 ###################### End Route ##########################
