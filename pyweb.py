@@ -58,7 +58,6 @@ def hash_mdp(password):
     not_hashed.update(password.encode("utf-8"))
     return not_hashed.digest()
 
-
 def database_insert_task(name, desc, owner_id):
     """Insert user task in database
 
@@ -127,9 +126,11 @@ def about():
 @app.route("/iziPostApp")
 def show_app():
     """App routing"""
-    
     return render_template("IziPostApp.html", title=TITRE)
 
+@app.route("/createNewTaskPage")
+def create_new_task_page():
+    return render_template("createNewTaskPage.html",title=TITRE)
 
 @app.route("/register", methods=("GET", "POST"))
 def register():
@@ -158,11 +159,11 @@ def register():
                 )
                 database.commit()
             except database.IntegrityError:
-                error = "User{username} is already registered."
+                error = "Pseudo already used."
+                flash(error)
             else:
                 return redirect(url_for("login"))
 
-        flash(error)
         return redirect(url_for("register"))
     return render_template("signupForm.html", title=TITRE)
 
@@ -188,7 +189,8 @@ def login():
             session["username"] = user["username"]
             return redirect(url_for("show_app"))
 
-        flash(error, "info")
+        flash(error)
+        
         return redirect(url_for("login"))
     return render_template("loginForm.html", title=TITRE)
 

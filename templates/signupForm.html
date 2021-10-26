@@ -40,6 +40,15 @@
         <button class="btn btn-lg btn-success w-25 mt-2" type="submit">S'inscrire</button>
       </form>
       <a href="{{url_for('login')}}" class="text-decoration-none text-white">J'ai déja un compte</a>
+      {% block body %}
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {%for message in messages%}
+           <div class="container text-center"><h3 class="text-danger">{{message}}</h3></div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    {% endblock %}
     </main>
     <script>
         function goBack() {
