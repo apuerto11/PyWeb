@@ -84,21 +84,22 @@ def database_update_task(task_id, name, description, status):
         database.commit(),
     )
 
+
 def database_fetch_tasks(username):
     """get all tasks from a user"""
     database = get_database()
     tasks = database.execute(
         "SELECT * FROM tasks t INNER JOIN users u on t.owner = u.id WHERE u.username = ?",
-        (username)
+        (username),
     ).fetchall()
     return tasks
 
-def delete(task_id):
-    if request.method =="POST":
+
+def database_delete_tasks(task_id):
+    """delete a task with a specific ID"""
+    if request.method == "POST":
         database = get_database()
-        database.execute(
-        "DELETE FROM tasks WHERE id = ?", (task_id,)
-        )
+        database.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
         database.commit()
 
 
@@ -127,7 +128,6 @@ def about():
 @app.route("/iziPostApp")
 def show_app():
     """App routing"""
-    
     return render_template("IziPostApp.html", title=TITRE)
 
 
@@ -198,5 +198,6 @@ def logout():
     """Logout routing"""
     session.clear()
     return redirect(url_for("index"))
+
 
 ###################### End Route ##########################
