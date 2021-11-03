@@ -51,45 +51,108 @@
       <main class="text-center text-white">
 
         <hr class="m-0 bg-white mt-2">
-
-        <div class="col m-3 w-25">
-          <div class="row border border-danger m-2">
-            <h4>Urgent</h4>
-          </div>
-          <div class="row border border-warning m-2">
-            <h4>Important</h4>
-          </div>
-          <div class="row border border-info m-2">
-            <h4>Normal</h4>
-          </div>
-          <div class="row border border-success m-2">
-            <h4>Terminé</h4>
-          </div>
+<div class="container align-items-center justify-content-center text-white">
+  <div class="row">
+    {%for t in tasks%}
+      {% if t[3]== 0 %}
+    <div class="col-sm-6">
+      <div class="card bg-secondary text-white border-info p-3 m-3 border-3">
+        <div class="content">
+        <h5>{{t[1]}}</h6>
+        <hr class="bg-dark">
+        <p>{{t[2]}}</p>
+        <hr class="bg-dark">
+        <div class="container d-flex flex-row-reverse">
+          <a href="" >
+           <img src="../static/edit_task.gif" alt="" width="20px" height="20px" class="m-3">
+           </a>
+          <div class="container-fluid"></div>
+          <a href="">
+           <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" class="bi bi-trash text-dark m-3" viewBox="0 0 16 16">
+             <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+              <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+            </svg>
+           </a>
         </div>
-
-        <!-- <div class="card bg-secondary text-white border-danger p-3 m-3 border-3">
-          <div class="content">
-            <h5>Titre</h6>
-            <hr class="bg-dark">
-            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iure deserunt optio soluta nisi tempora eligendi porro, recusandae obcaecati dolores deleniti atque excepturi vitae impedit corporis. Atque rem ab reiciendis totam?</p>
-            <hr class="bg-dark">
-            <div class="container d-flex flex-row-reverse">
-              <a href="" >
-                <img src="../static/edit_task.gif" alt="" width="20px" height="20px" class="m-3">
-               </a>
-               <div class="container-fluid"></div>
-               <a href="">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" class="bi bi-trash text-dark m-3" viewBox="0 0 16 16">
-                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-                </svg>
-               </a>
-            </div>
-          </div>
-        </div> -->
-
+       </div>
+      </div>
+    </div>
+      {%endif%}
+      {% if t[3]== 1 %}
+    <div class="col-sm-6">
+      <div class="card bg-secondary text-white border-warning p-3 m-3 border-3">
+        <div class="content">
+        <h5>{{t[1]}}</h6>
+        <hr class="bg-dark">
+        <p>{{t[2]}}</p>
+        <hr class="bg-dark">
+        <div class="container d-flex flex-row-reverse">
+          <a href="" >
+           <img src="../static/edit_task.gif" alt="" width="20px" height="20px" class="m-3">
+           </a>
+          <div class="container-fluid"></div>
+          <a href="">
+           <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" class="bi bi-trash text-dark m-3" viewBox="0 0 16 16">
+             <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+              <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+            </svg>
+           </a>
         </div>
-
+       </div>
+      </div>
+    </div>
+      {%endif%}
+      {% if t[3]== 2 %}
+    <div class="col-sm-6">
+      <div class="card bg-secondary text-white border-danger p-3 m-3 border-3">
+        <div class="content">
+        <h5>{{t[1]}}</h6>
+        <hr class="bg-dark">
+        <p>{{t[2]}}</p>
+        <hr class="bg-dark">
+        <div class="container d-flex flex-row-reverse">
+          <a href="" >
+           <img src="../static/edit_task.gif" alt="" width="20px" height="20px" class="m-3">
+           </a>
+          <div class="container-fluid"></div>
+          <a href="">
+           <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" class="bi bi-trash text-dark m-3" viewBox="0 0 16 16">
+             <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+              <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+            </svg>
+           </a>
+        </div>
+       </div>
+      </div>
+    </div>
+      {%endif%}
+      {% if t[3]== 3 %}
+    <div class="col-sm-6">
+      <div class="card bg-secondary text-white border-success p-3 m-3 border-3">
+        <div class="content">
+        <h5>{{t[1]}}</h6>
+        <hr class="bg-dark">
+        <p>{{t[2]}}</p>
+        <hr class="bg-dark">
+        <div class="container d-flex flex-row-reverse">
+          <a href="" >
+           <img src="../static/edit_task.gif" alt="" width="20px" height="20px" class="m-3">
+           </a>
+          <div class="container-fluid"></div>
+          <a href="">
+           <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" class="bi bi-trash text-dark m-3" viewBox="0 0 16 16">
+             <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+              <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+            </svg>
+           </a>
+        </div>
+       </div>
+      </div>
+    </div>
+      {%endif%}
+    {% endfor %}
+</div>
+</div>
       </main>
 </body>
 </html>

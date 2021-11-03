@@ -20,7 +20,7 @@
               <li><a href="{{ url_for('show_app') }}" class="nav-link px-2 text-white">Mes IziPosts</a></li>
               {%endif%}
             </ul>
-    
+            
             {% if session["username"] %}
             <div class="text-end d-flex">
               <li class="nav-link text-white">{{session["username"]}}</li>

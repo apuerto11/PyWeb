@@ -1,10 +1,8 @@
 """IziPost main module"""
-# import click
+
 import sqlite3
 import os
 import hashlib
-
-# from flask.cli import with_appcontext
 from flask.helpers import flash
 from flask import (
     Flask,
@@ -15,9 +13,10 @@ from flask import (
     # current_app,
     session,
 )
-
 app = Flask(__name__)
 app.secret_key = "t\xdd\xe7\xe2\xda\xa2\xc0^\xd7%\x19t`\xfeg\x1e\xbe"
+MyList= ""
+
 
 TITRE = "IziPost"
 
@@ -50,28 +49,36 @@ if not os.path.isfile("instance/flaskr.sqlite"):
 
 def hash_mdp(password):
     """Encrypt password
-
     Keyword arguments:
     pw -- Password to encrypt as string
     """
+
     not_hashed = hashlib.sha256()
     not_hashed.update(password.encode("utf-8"))
     return not_hashed.digest()
 
-def database_insert_task(name, desc, owner_id, status):
-    """Insert user task in database
 
-    Keyword arguments:
-    name -- lastname of the user as string
-    desc -- description of the task
-    owner_id -- The ID of the owner"""
-    database = get_database()
+# owner_id n'est pas un parametre il faut que la méthode recupere directement l'id de l'utilisateur et la mette en parametre
+@app.route("/createTask",  methods=('GET','POST'))
+# def createTask(name, desc, status, owner_id):
+def createTask():
+    if request.method == 'POST':
+         
+        TaskStatus = request.form.get('selectSection')
+        print(TaskStatus)
+        name=request.form.get('TaskTitle')
+        desc=request.form.get('TaskContent')
 
-    database.execute(
-        "INSERT INTO tasks (name, description, status, owner) VALUES (?, ?, ?, ?)",
-        (name, desc, status, owner_id),
-    )
-    database.commit()
+        database = get_database()
+    
+        database.execute(
+          "INSERT INTO tasks (name, description, status, owner) VALUES (?, ?, ?, ?)",
+         # (name, desc, status, owner_id),
+            (name, desc, TaskStatus, session["id"]),
+        )
+        database.commit()
+
+    return redirect(url_for("show_app"))
 
 
 def database_update_task(task_id, name, description, status):
@@ -83,15 +90,6 @@ def database_update_task(task_id, name, description, status):
         database.commit(),
     )
 
-
-def database_fetch_tasks(username):
-    """get all tasks from a user"""
-    database = get_database()
-    tasks = database.execute(
-        "SELECT * FROM tasks t INNER JOIN users u on t.owner = u.id WHERE u.username = ?",
-        (username),
-    ).fetchall()
-    return tasks
 
 
 def database_delete_tasks(task_id):
@@ -105,8 +103,10 @@ def database_delete_tasks(task_id):
 if not os.path.exists("instance"):
     os.makedirs("instance")
 
+
 if not os.path.isfile("instance/flaskr.sqlite"):
     init_database()
+
 
 ### Index HTML ###
 @app.route("/")
@@ -122,16 +122,34 @@ def about():
     """About routing"""
     return render_template("about.html", title=TITRE)
 
+# @app.route('MainApp')
+# def database_fetch_tasks():
+#     """get all tasks from a user"""
+#     database = get_database()
+#     tasks = database.execute(
+#         "SELECT * FROM tasks t INNER JOIN users u on t.owner = u.id WHERE u.username = ?",
+#         (session["username"]),
+#     ).fetchall()
 
-### Application en elle meme (visible dans le header pour raison de developpement)###
+#     return tasks
+
 @app.route("/iziPostApp")
 def show_app():
     """App routing"""
-    return render_template("IziPostApp.html", title=TITRE)
+
+    database = get_database()
+    tasks = database.execute(
+        "SELECT * FROM tasks t INNER JOIN users u on t.owner = u.id WHERE u.username = ? ORDER BY id desc",
+        (session["username"]),
+    ).fetchall()
+    print(tasks)
+    return render_template("IziPostApp.html", title=TITRE, lengthTasks = len(tasks), tasks = tasks)
+
 
 @app.route("/createNewTaskPage")
 def create_new_task_page():
     return render_template("createNewTaskPage.html",title=TITRE)
+
 
 @app.route("/register", methods=("GET", "POST"))
 def register():
@@ -192,8 +210,8 @@ def login():
             return redirect(url_for("show_app"))
 
         flash(error)
-        
         return redirect(url_for("login"))
+
     return render_template("loginForm.html", title=TITRE)
 
 
