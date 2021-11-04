@@ -15,8 +15,6 @@ from flask import (
 
 app = Flask(__name__)
 app.secret_key = "t\xdd\xe7\xe2\xda\xa2\xc0^\xd7%\x19t`\xfeg\x1e\xbe"
-MyList = ""
-
 
 TITRE = "IziPost"
 
@@ -57,6 +55,25 @@ def hash_mdp(password):
     not_hashed.update(password.encode("utf-8"))
     return not_hashed.digest()
 
+def database_fetch_tasks():
+    """get all tasks from a user"""
+    database = get_database()
+    tasks = database.execute(
+        "SELECT * FROM tasks t INNER JOIN users u on t.owner = u.id WHERE u.username = ? ORDER BY id desc",
+        (session["username"],),
+    ).fetchall()
+
+    return tasks
+
+def database_update_task(task_id, name, description, status):
+    """Update a task in the database"""
+    database = get_database()
+    database.execute(
+        "UPDATE tasks SET name = ?, description = ?, status = ? WHERE id = ?",
+        (name, description, status, task_id),
+        database.commit(),
+    )
+
 
 # owner_id n'est pas un parametre il faut que la méthode recupere directement l'id de l'utilisateur et la mette en parametre
 @app.route("/createTask", methods=("GET", "POST"))
@@ -80,27 +97,6 @@ def createTask():
     return redirect(url_for("show_app"))
 
 
-def database_fetch_tasks():
-    """get all tasks from a user"""
-    database = get_database()
-    tasks = database.execute(
-        "SELECT * FROM tasks t INNER JOIN users u on t.owner = u.id WHERE u.username = ? ORDER BY id desc",
-        (session["username"],),
-    ).fetchall()
-
-    return tasks
-
-
-def database_update_task(task_id, name, description, status):
-    """Update a task in the database"""
-    database = get_database()
-    database.execute(
-        "UPDATE tasks SET name = ?, description = ?, status = ? WHERE id = ?",
-        (name, description, status, task_id),
-        database.commit(),
-    )
-
-
 @app.route("/deleteTask", methods=("GET", "POST"))
 def database_delete_tasks():
     """delete a task with a specific ID"""
@@ -110,14 +106,6 @@ def database_delete_tasks():
         database.commit()
 
     return redirect(url_for("show_app"))
-
-
-if not os.path.exists("instance"):
-    os.makedirs("instance")
-
-
-if not os.path.isfile("instance/flaskr.sqlite"):
-    init_database()
 
 
 ### Index HTML ###
@@ -170,25 +158,23 @@ def register():
         error = None
 
         if not username:
-            error = "Username is required."
+            flash("Username is required.")
         elif not password:
-            error = "Password is required."
+            flash("Password is required.")
 
-        if error is None:
+        if error is None and username and password:
             try:
                 database.execute(
                     "INSERT INTO users (username, password, firstname, name) VALUES (?, ?, ?, ?)",
                     (username, hash_mdp(password), firstname, lastname),
                 )
                 database.commit()
+                return render_template("signupForm.html", title=TITRE)
             except database.IntegrityError:
                 error = "Pseudo already used."
                 flash(error)
-            else:
-                return redirect(url_for("login"))
 
-        return redirect(url_for("register"))
-    return render_template("signupForm.html", title=TITRE)
+    return render_template("signupForm.html")
 
 
 @app.route("/login", methods=("GET", "POST"))
