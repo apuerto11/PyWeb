@@ -132,15 +132,12 @@ def show_app():
     )
 
 
-@app.route("/editPage")
+@app.route("/editPage",methods=("GET", "POST"))
 def editPage():
-    task_id = request.form["task_id"]
-    name = request.form["name"]
-    description = request.form["description"]
-    status = request.form["status"]
+    t_ID = request.form['taskEditBtn']
 
-    database_update_task(task_id, name, description, status)
-    return render_template("editTaskPage.html")
+    # database_update_task(task_id, name, description, status)
+    return render_template("editTaskPage.html",id=t_ID, taskTitle=name, taskDesc = description, status=status)
 
 
 @app.route("/createNewTaskPage")
