@@ -30,7 +30,7 @@ def get_database():
         detect_types=sqlite3.PARSE_DECLTYPES,
     )
     database.row_factory = sqlite3.Row
-
+    
     return database
 
 
@@ -200,7 +200,7 @@ def register():
                 error = "Pseudo already used."
                 flash(error)
 
-    return render_template("signupForm.html")
+    return render_template("signupForm.html", title=TITRE)
 
 
 @app.route("/login", methods=("GET", "POST"))
