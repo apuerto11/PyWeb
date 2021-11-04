@@ -195,7 +195,7 @@ def register():
                     (username, hash_mdp(password), firstname, lastname),
                 )
                 database.commit()
-                return render_template("signupForm.html", title=TITRE)
+                return render_template("loginForm.html", title=TITRE)
             except database.IntegrityError:
                 error = "Pseudo already used."
                 flash(error)
