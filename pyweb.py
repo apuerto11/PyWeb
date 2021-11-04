@@ -80,7 +80,6 @@ def createTask():
 
     return redirect(url_for("show_app"))
 
-
 def database_update_task(task_id, name, description, status):
     """Update a task in the database"""
     database = get_database()
@@ -124,28 +123,22 @@ def about():
     """About routing"""
     return render_template("about.html", title=TITRE)
 
-# @app.route('MainApp')
-# def database_fetch_tasks():
-#     """get all tasks from a user"""
-#     database = get_database()
-#     tasks = database.execute(
-#         "SELECT * FROM tasks t INNER JOIN users u on t.owner = u.id WHERE u.username = ?",
-#         (session["username"]),
-#     ).fetchall()
+def database_fetch_tasks():
+    """get all tasks from a user"""
+    database = get_database()
+    tasks = database.execute(
+        "SELECT * FROM tasks t INNER JOIN users u on t.owner = u.id WHERE u.username = ?",
+        (session["username"]),
+    ).fetchall()
+    print(tasks)
+    return tasks
 
-#     return tasks
 
 @app.route("/iziPostApp")
 def show_app():
     """App routing"""
 
-    database = get_database()
-    tasks = database.execute(
-        "SELECT * FROM tasks t INNER JOIN users u on t.owner = u.id WHERE u.username = ? ORDER BY id desc",
-        (session["username"]),
-    ).fetchall()
-    print(tasks)
-    return render_template("IziPostApp.html", title=TITRE, lengthTasks = len(tasks), tasks = tasks)
+    return render_template("IziPostApp.html", title=TITRE, tasks = database_fetch_tasks())
 
 
 @app.route("/createNewTaskPage")
@@ -209,7 +202,7 @@ def login():
             session.clear()
             session["username"] = user["username"]
             session["id"] = user["id"]
-            return redirect(url_for("show_app"))
+            return redirect(url_for("index"))
 
         flash(error)
         return redirect(url_for("login"))
