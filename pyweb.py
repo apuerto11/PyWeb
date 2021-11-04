@@ -56,6 +56,7 @@ def hash_mdp(password):
     not_hashed.update(password.encode("utf-8"))
     return not_hashed.digest()
 
+
 def database_fetch_tasks():
     """get all tasks from a user"""
     database = get_database()
@@ -66,14 +67,16 @@ def database_fetch_tasks():
 
     return tasks
 
+
 def database_update_task(task_id, name, description, status):
     """Update a task in the database"""
     database = get_database()
     database.execute(
         "UPDATE tasks SET name = ?, description = ?, status = ? WHERE id = ?",
-        (name, description, status, task_id),
-        database.commit(),
+        (name, description, status, task_id,),
     )
+    database.commit()
+
 
 def database_get_task(id):
     database = get_database()
@@ -83,6 +86,7 @@ def database_get_task(id):
     ).fetchall()
 
     return task
+
 
 @app.route("/createTask", methods=("GET", "POST"))
 # def createTask(name, desc, status, owner_id):
@@ -145,7 +149,19 @@ def editPage():
     t_ID = request.form['taskEditBtn']
 
     # database_update_task(task_id, name, description, status)
-    return render_template("editTaskPage.html",id=t_ID, taskTitle=name, taskDesc = description, status=status)
+    return render_template("editTaskPage.html",task = database_get_task(t_ID),title=TITRE)
+
+
+@app.route("/update_task", methods=("GET", "POST"))
+def update_task():
+    t_ID = request.form['btnSubmit']
+    title = request.form.get("NewTaskTitle")
+    desc = request.form.get("NewTaskContent")
+    status = request.form.get("selectSection")
+
+    database_update_task(t_ID,title,desc,status)
+
+    return render_template("IziPostApp.html",title=TITRE,tasksList=database_fetch_tasks())
 
 
 @app.route("/createNewTaskPage")
