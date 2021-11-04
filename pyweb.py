@@ -101,12 +101,12 @@ def database_update_task(task_id, name, description, status):
     )
 
 
-@app.route("/deleteTask")
-def database_delete_tasks(task_id):
+@app.route("/deleteTask", methods=("GET", "POST"))
+def database_delete_tasks():
     """delete a task with a specific ID"""
     if request.method == "POST":
         database = get_database()
-        database.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
+        database.execute("DELETE FROM tasks WHERE id = ?", (request.form['task'],))
         database.commit()
 
     return redirect(url_for("show_app"))
