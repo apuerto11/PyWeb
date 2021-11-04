@@ -1,5 +1,4 @@
 """IziPost main module"""
-
 import sqlite3
 import os
 import hashlib
@@ -65,7 +64,6 @@ def createTask():
     if request.method == 'POST':
          
         TaskStatus = request.form.get('selectSection')
-        print(TaskStatus)
         name=request.form.get('TaskTitle')
         desc=request.form.get('TaskContent')
 
@@ -79,6 +77,7 @@ def createTask():
         database.commit()
 
     return redirect(url_for("show_app"))
+
 
 def database_update_task(task_id, name, description, status):
     """Update a task in the database"""
@@ -123,14 +122,14 @@ def about():
     """About routing"""
     return render_template("about.html", title=TITRE)
 
+
 def database_fetch_tasks():
     """get all tasks from a user"""
     database = get_database()
-    tasks = database.execute(
-        "SELECT * FROM tasks t INNER JOIN users u on t.owner = u.id WHERE u.username = ?",
-        (session["username"]),
+    tasks = database.execute('SELECT * FROM tasks t INNER JOIN users u on t.owner = u.id WHERE u.username = ? ORDER BY id desc',
+        (session['username'],)
     ).fetchall()
-    print(tasks)
+    
     return tasks
 
 
@@ -138,7 +137,7 @@ def database_fetch_tasks():
 def show_app():
     """App routing"""
 
-    return render_template("IziPostApp.html", title=TITRE, tasks = database_fetch_tasks())
+    return render_template("IziPostApp.html", tasksList= database_fetch_tasks(),title = TITRE)
 
 
 @app.route("/createNewTaskPage")
