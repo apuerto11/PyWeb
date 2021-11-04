@@ -2,138 +2,156 @@
 <html>
 
 <head>
-    <title>{{title}}</title>
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <title>{{title}}</title>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
 
 <body class="bg-dark">
-    <header class="p-3 bg-dark text-white">
-        <div class="container">
-          <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-              <img class="bi me-2" width="70" height="50" src="../static/logo.jpg">
-            </a>
+  <header class="p-3 bg-dark text-white">
+    <div class="container">
+      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+        <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+          <img class="bi me-2" width="70" height="50" src="../static/logo.jpg">
+        </a>
 
-            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-              <li><a href="/" class="nav-link px-2 text-secondary">Accueil</a></li>
-              <li><a href="{{ url_for('about') }}" class="nav-link px-2 text-white">A propos</a></li>
-              {% if session["username"] %}
-              <li><a href="{{ url_for('show_app') }}" class="nav-link px-2 text-white">Mes IziPosts</a></li>
-              {%endif%}
-            </ul>
-            
-            {% if session["username"] %}
-            <div class="text-end d-flex">
-              <li class="nav-link text-white">{{session["username"]}}</li>
-              <a href="{{ url_for('logout') }}" class="btn btn-outline-warning me-2">Se déconnecter</a>
-            </div>
-            {%else%}
-              <div class="text-end">
-                <a href="{{ url_for('login') }}" class="btn btn-outline-light mr-5">Se connecter</a>
-                <a href="{{ url_for('register') }}" class="btn btn-warning">S'inscrire</a>
-              </div>
-            {%endif%}
-          </div>
+        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+          <li><a href="/" class="nav-link px-2 text-secondary">Accueil</a></li>
+          <li><a href="{{ url_for('about') }}" class="nav-link px-2 text-white">A propos</a></li>
+          {% if session["username"] %}
+          <li><a href="{{ url_for('show_app') }}" class="nav-link px-2 text-white">Mes IziPosts</a></li>
+          {%endif%}
+        </ul>
+
+        {% if session["username"] %}
+        <div class="text-end d-flex">
+          <li class="nav-link text-white">{{session["username"]}}</li>
+          <a href="{{ url_for('logout') }}" class="btn btn-outline-warning me-2">Se déconnecter</a>
         </div>
-      </header>
-      <hr class="m-0 bg-secondary ">
-      <main class="text-center text-white">
+        {%else%}
+        <div class="text-end">
+          <a href="{{ url_for('login') }}" class="btn btn-outline-light mr-5">Se connecter</a>
+          <a href="{{ url_for('register') }}" class="btn btn-warning">S'inscrire</a>
+        </div>
+        {%endif%}
+      </div>
+    </div>
+  </header>
+  <hr class="m-0 bg-secondary ">
+  <main class="text-center text-white">
 
-          <h1 class="mt-3 mb-3">
-              Un endroit pour vous rappeler de tout !
-          </h1>
+    <h1 class="mt-3 mb-3">
+      Un endroit pour vous rappeler de tout !
+    </h1>
 
-          <hr class="m-0 bg-white mt-2">
+    <hr class="m-0 bg-white mt-2">
 
-          <div class="container mt-5 ">
+    <div class="container mt-5 ">
 
-            <div class="card bg-secondary text-white p-3 m-3 border-3 border-danger">
-              <div class="content">
-                <h5>Quand c'est rouge, c'est que c'est urgent.</h6>
-                <hr class="bg-dark">
-                <p>Ici, vous remplirez ce que vous avez prévu de faire d'urgent, c'est simple, regardez : " Aujourd'hui, je ne dois surtout pas oublier d'aller chercher les enfants à l'école, sinon je risque de dormir sur le canapé. "</p>
-                <hr class="bg-dark">
-                <div class="container d-flex flex-row-reverse">
-                  <a href="#" >
-                    <img src="../static/edit_task.gif" alt="" width="20px" height="20px" class="m-3">
-                   </a>
-                   <div class="container-fluid"></div>
-                   <a href="#">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" class="bi bi-trash text-dark m-3" viewBox="0 0 16 16">
-                      <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                      <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-                    </svg>
-                   </a>
-                </div>
-              </div>
+      <div class="card bg-secondary text-white p-3 m-3 border-3 border-danger">
+        <div class="content">
+          <h5>Quand c'est rouge, c'est que c'est urgent.</h6>
+            <hr class="bg-dark">
+            <p>Ici, vous remplirez ce que vous avez prévu de faire d'urgent, c'est simple, regardez : " Aujourd'hui, je
+              ne dois surtout pas oublier d'aller chercher les enfants à l'école, sinon je risque de dormir sur le
+              canapé. "</p>
+            <hr class="bg-dark">
+            <div class="container d-flex flex-row-reverse">
+              <a href="#">
+                <img src="../static/edit_task.gif" alt="" width="20px" height="20px" class="m-3">
+              </a>
+              <div class="container-fluid"></div>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor"
+                  class="bi bi-trash text-dark m-3" viewBox="0 0 16 16">
+                  <path
+                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                  <path fill-rule="evenodd"
+                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                </svg>
+              </a>
             </div>
+        </div>
+      </div>
 
-            <div class="card bg-secondary text-white p-3 m-3 border-3 border-warning">
-              <div class="content">
-                <h5>Quand c'est orange, c'est que c'est assez important.</h6>
-                <hr class="bg-dark">
-                <p>Ici, vous remplirez ce que vous avez prévu de faire d'important, c'est simple, regardez : " Aujourd'hui, je dois sortir le chien sinon il va chier partout dans la maison !!"</p>
-                <hr class="bg-dark">
-                <div class="container d-flex flex-row-reverse">
-                  <a href="#" >
-                    <img src="../static/edit_task.gif" alt="" width="20px" height="20px" class="m-3">
-                   </a>
-                   <div class="container-fluid"></div>
-                   <a href="#">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" class="bi bi-trash text-dark m-3" viewBox="0 0 16 16">
-                      <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                      <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-                    </svg>
-                   </a>
-                </div>
-              </div>
+      <div class="card bg-secondary text-white p-3 m-3 border-3 border-warning">
+        <div class="content">
+          <h5>Quand c'est orange, c'est que c'est assez important.</h6>
+            <hr class="bg-dark">
+            <p>Ici, vous remplirez ce que vous avez prévu de faire d'important, c'est simple, regardez : " Aujourd'hui,
+              je dois sortir le chien sinon il va chier partout dans la maison !!"</p>
+            <hr class="bg-dark">
+            <div class="container d-flex flex-row-reverse">
+              <a href="#">
+                <img src="../static/edit_task.gif" alt="" width="20px" height="20px" class="m-3">
+              </a>
+              <div class="container-fluid"></div>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor"
+                  class="bi bi-trash text-dark m-3" viewBox="0 0 16 16">
+                  <path
+                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                  <path fill-rule="evenodd"
+                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                </svg>
+              </a>
             </div>
+        </div>
+      </div>
 
-            <div class="card bg-secondary text-white p-3 m-3 border-3 border-info">
-              <div class="content">
-                <h5>Quand c'est bleu, c'est que c'est à faire, mais tranquille ça ne presse pas.</h6>
-                <hr class="bg-dark">
-                <p>Ici, vous remplirez ce que vous avez prévu de faire a votre rythme, c'est simple, regardez : " Aujourd'hui, je devrais me motiver pour faire du sport."</p>
-                <hr class="bg-dark">
-                <div class="container d-flex flex-row-reverse">
-                  <a href="#" >
-                    <img src="../static/edit_task.gif" alt="" width="20px" height="20px" class="m-3">
-                   </a>
-                   <div class="container-fluid"></div>
-                   <a href="#">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" class="bi bi-trash text-dark m-3" viewBox="0 0 16 16">
-                      <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                      <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-                    </svg>
-                   </a>
-                </div>
-              </div>
+      <div class="card bg-secondary text-white p-3 m-3 border-3 border-info">
+        <div class="content">
+          <h5>Quand c'est bleu, c'est que c'est à faire, mais tranquille ça ne presse pas.</h6>
+            <hr class="bg-dark">
+            <p>Ici, vous remplirez ce que vous avez prévu de faire a votre rythme, c'est simple, regardez : "
+              Aujourd'hui, je devrais me motiver pour faire du sport."</p>
+            <hr class="bg-dark">
+            <div class="container d-flex flex-row-reverse">
+              <a href="#">
+                <img src="../static/edit_task.gif" alt="" width="20px" height="20px" class="m-3">
+              </a>
+              <div class="container-fluid"></div>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor"
+                  class="bi bi-trash text-dark m-3" viewBox="0 0 16 16">
+                  <path
+                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                  <path fill-rule="evenodd"
+                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                </svg>
+              </a>
             </div>
+        </div>
+      </div>
 
-            <div class="card bg-secondary text-white p-3 m-3 border-3 border-success">
-              <div class="content">
-                <h5>Quand c'est vert, c'est que c'est que vous avez accompli ce que vous devez faire ! Bravo</h6>
-                <hr class="bg-dark">
-                <p>Ici, votre mission sera accomplie et vous pourrez passer à vos prochaines tâches !</p>
-                <hr class="bg-dark">
-                <div class="container d-flex flex-row-reverse">
-                  <a href="#" >
-                    <img src="../static/edit_task.gif" alt="" width="20px" height="20px" class="m-3">
-                   </a>
-                   <div class="container-fluid"></div>
-                   <a href="#">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" class="bi bi-trash text-dark m-3" viewBox="0 0 16 16">
-                      <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                      <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-                    </svg>
-                   </a>
-                </div>
-              </div>
+      <div class="card bg-secondary text-white p-3 m-3 border-3 border-success">
+        <div class="content">
+          <h5>Quand c'est vert, c'est que c'est que vous avez accompli ce que vous devez faire ! Bravo</h6>
+            <hr class="bg-dark">
+            <p>Ici, votre mission sera accomplie et vous pourrez passer à vos prochaines tâches !</p>
+            <hr class="bg-dark">
+            <div class="container d-flex flex-row-reverse">
+              <a href="#">
+                <img src="../static/edit_task.gif" alt="" width="20px" height="20px" class="m-3">
+              </a>
+              <div class="container-fluid"></div>
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor"
+                  class="bi bi-trash text-dark m-3" viewBox="0 0 16 16">
+                  <path
+                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                  <path fill-rule="evenodd"
+                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                </svg>
+              </a>
             </div>
+        </div>
+      </div>
 
-          </div>
+    </div>
 
-      </main>
+  </main>
 </body>
+
 </html>

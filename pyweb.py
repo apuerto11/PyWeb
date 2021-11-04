@@ -12,9 +12,10 @@ from flask import (
     # current_app,
     session,
 )
+
 app = Flask(__name__)
 app.secret_key = "t\xdd\xe7\xe2\xda\xa2\xc0^\xd7%\x19t`\xfeg\x1e\xbe"
-MyList= ""
+MyList = ""
 
 
 TITRE = "IziPost"
@@ -58,25 +59,36 @@ def hash_mdp(password):
 
 
 # owner_id n'est pas un parametre il faut que la méthode recupere directement l'id de l'utilisateur et la mette en parametre
-@app.route("/createTask",  methods=('GET','POST'))
+@app.route("/createTask", methods=("GET", "POST"))
 # def createTask(name, desc, status, owner_id):
 def createTask():
-    if request.method == 'POST':
-         
-        TaskStatus = request.form.get('selectSection')
-        name=request.form.get('TaskTitle')
-        desc=request.form.get('TaskContent')
+    if request.method == "POST":
+
+        TaskStatus = request.form.get("selectSection")
+        name = request.form.get("TaskTitle")
+        desc = request.form.get("TaskContent")
 
         database = get_database()
-    
+
         database.execute(
-          "INSERT INTO tasks (name, description, status, owner) VALUES (?, ?, ?, ?)",
-         # (name, desc, status, owner_id),
+            "INSERT INTO tasks (name, description, status, owner) VALUES (?, ?, ?, ?)",
+            # (name, desc, status, owner_id),
             (name, desc, TaskStatus, session["id"]),
         )
         database.commit()
 
     return redirect(url_for("show_app"))
+
+
+def database_fetch_tasks():
+    """get all tasks from a user"""
+    database = get_database()
+    tasks = database.execute(
+        "SELECT * FROM tasks t INNER JOIN users u on t.owner = u.id WHERE u.username = ? ORDER BY id desc",
+        (session["username"],),
+    ).fetchall()
+
+    return tasks
 
 
 def database_update_task(task_id, name, description, status):
@@ -123,26 +135,24 @@ def about():
     return render_template("about.html", title=TITRE)
 
 
-def database_fetch_tasks():
-    """get all tasks from a user"""
-    database = get_database()
-    tasks = database.execute('SELECT * FROM tasks t INNER JOIN users u on t.owner = u.id WHERE u.username = ? ORDER BY id desc',
-        (session['username'],)
-    ).fetchall()
-    
-    return tasks
-
-
 @app.route("/iziPostApp")
 def show_app():
     """App routing"""
 
-    return render_template("IziPostApp.html", tasksList= database_fetch_tasks(),title = TITRE)
+    return render_template(
+        "IziPostApp.html", tasksList=database_fetch_tasks(), title=TITRE
+    )
+
+
+@app.route("/editPage")
+def editPage():
+
+    return render_template("editTaskPage.html")
 
 
 @app.route("/createNewTaskPage")
 def create_new_task_page():
-    return render_template("createNewTaskPage.html",title=TITRE)
+    return render_template("createNewTaskPage.html", title=TITRE)
 
 
 @app.route("/register", methods=("GET", "POST"))
