@@ -75,12 +75,14 @@
                 <p>{{t[2]}}</p>
                 <hr class="bg-dark">
                 <div class="container d-flex flex-row-reverse">
-                  <a href="/editPage">
+                  <form action="{{url_for('editPage')}}">
+                  <button name="taskEdit" type="submit" class="btn shadow-none">
                     <img src="../static/edit_task.gif" alt="" width="20px" height="20px" class="m-3">
-                  </a>
+                  </button>
+                  </form>
                   <div class="container-fluid"></div>
                   <form action="{{url_for('database_delete_tasks')}}" method="post">
-                    <button name="task" value= {{t[0]}} type="submit" class='btn'>
+                    <button name="task" value= {{t[0]}} type="submit" class='btn shadow-none'>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor"
                       class="bi bi-trash text-dark m-3" viewBox="0 0 16 16">
                       <path
