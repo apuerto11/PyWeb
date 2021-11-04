@@ -1,4 +1,5 @@
 """IziPost main module"""
+import re
 import sqlite3
 import os
 import hashlib
@@ -74,7 +75,6 @@ def database_update_task(task_id, name, description, status):
         database.commit(),
     )
 
-
 # owner_id n'est pas un parametre il faut que la méthode recupere directement l'id de l'utilisateur et la mette en parametre
 @app.route("/createTask", methods=("GET", "POST"))
 # def createTask(name, desc, status, owner_id):
@@ -134,7 +134,12 @@ def show_app():
 
 @app.route("/editPage")
 def editPage():
+    task_id = request.form["task_id"]
+    name = request.form["name"]
+    description = request.form["description"]
+    status = request.form["status"]
 
+    database_update_task(task_id, name, description, status)
     return render_template("editTaskPage.html")
 
 
