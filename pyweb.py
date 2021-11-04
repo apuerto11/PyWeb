@@ -75,7 +75,15 @@ def database_update_task(task_id, name, description, status):
         database.commit(),
     )
 
-# owner_id n'est pas un parametre il faut que la méthode recupere directement l'id de l'utilisateur et la mette en parametre
+def database_get_task(id):
+    database = get_database()
+    task = database.execute(
+        "SELECT * FROM tasks WHERE id = ?",
+        (id,),
+    ).fetchall()
+
+    return task
+
 @app.route("/createTask", methods=("GET", "POST"))
 # def createTask(name, desc, status, owner_id):
 def createTask():
