@@ -1,10 +1,7 @@
 """IziPost main module"""
-# import click
 import sqlite3
 import os
 import hashlib
-
-# from flask.cli import with_appcontext
 from flask.helpers import flash
 from flask import (
     Flask,
@@ -31,7 +28,6 @@ def get_database():
         detect_types=sqlite3.PARSE_DECLTYPES,
     )
     database.row_factory = sqlite3.Row
-
     return database
 
 
@@ -53,6 +49,7 @@ def hash_mdp(password):
     Keyword arguments:\n
     password -- String to encrypt
     """
+
     not_hashed = hashlib.sha256()
     not_hashed.update(password.encode("utf-8"))
     return not_hashed.digest()
@@ -66,13 +63,24 @@ def database_insert_task(name, desc, owner_id, status):
     desc -- description of the task as string\n
     owner_id -- the ID of the owner as int\n
     status -- status of the task (0 = normal, 1 = important, 2 = urgent, 3 = done)"""
+
     database = get_database()
 
     database.execute(
-        "INSERT INTO tasks (name, description, status, owner) VALUES (?, ?, ?, ?)",
-        (name, desc, status, owner_id),
+        "INSERT INTO tasks (name, description, owner) VALUES (?, ?, ?, ?)",
+        (name, desc, owner_id, status),
     )
     database.commit()
+
+def database_fetch_tasks():
+    """get all tasks from a user"""
+    database = get_database()
+    tasks = database.execute(
+        "SELECT * FROM tasks t INNER JOIN users u on t.owner = u.id WHERE u.username = ? ORDER BY id desc",
+        (session["username"],),
+    ).fetchall()
+
+    return tasks
 
 
 def database_update_task(task_id, name, description, status):
@@ -86,40 +94,55 @@ def database_update_task(task_id, name, description, status):
     database = get_database()
     database.execute(
         "UPDATE tasks SET name = ?, description = ?, status = ? WHERE id = ?",
-        (name, description, status, task_id),
-        database.commit(),
+        (name, description, status, task_id,),
     )
+    database.commit()
 
-
-def database_fetch_tasks(username):
-    """get all tasks from a user
-
-    Keyword arguments:\n
-    username -- username of the user as string"""
-    database = get_database()
-    tasks = database.execute(
-        "SELECT * FROM tasks t INNER JOIN users u on t.owner = u.id WHERE u.username = ?",
-        (username),
-    ).fetchall()
-    return tasks
-
-
-def database_delete_tasks(task_id):
-    """delete a task with a specific ID
+def database_get_task(task_id):
+    """Get a task in the database
 
     Keyword arguments:\n
     task_id -- id of the task as int"""
+    database = get_database()
+    task = database.execute(
+        "SELECT * FROM tasks WHERE id = ?",
+        (task_id,),
+    ).fetchall()
+
+    return task
+
+
+@app.route("/createTask", methods=("GET", "POST"))
+# def createTask(name, desc, status, owner_id):
+def createTask():
     if request.method == "POST":
+
+        task_status = request.form.get("selectSection")
+        name = request.form.get("TaskTitle")
+        desc = request.form.get("TaskContent")
+
         database = get_database()
-        database.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
+
+        database.execute(
+            "INSERT INTO tasks (name, description, status, owner) VALUES (?, ?, ?, ?)",
+            # (name, desc, status, owner_id),
+            (name, desc, task_status, session["id"]),
+        )
         database.commit()
 
+    return redirect(url_for("show_app"))
 
-if not os.path.exists("instance"):
-    os.makedirs("instance")
 
-if not os.path.isfile("instance/flaskr.sqlite"):
-    init_database()
+@app.route("/deleteTask", methods=("GET", "POST"))
+def database_delete_tasks():
+    """delete a task with a specific ID"""
+    if request.method == "POST":
+        database = get_database()
+        database.execute("DELETE FROM tasks WHERE id = ?", (request.form['task'],))
+        database.commit()
+
+    return redirect(url_for("show_app"))
+
 
 ### Index HTML ###
 @app.route("/")
@@ -136,11 +159,34 @@ def about():
     return render_template("about.html", title=TITRE)
 
 
-### Application en elle meme (visible dans le header pour raison de developpement)###
 @app.route("/iziPostApp")
 def show_app():
     """App routing"""
-    return render_template("IziPostApp.html", title=TITRE)
+
+    return render_template(
+        "IziPostApp.html", tasksList=database_fetch_tasks(), title=TITRE
+    )
+
+
+@app.route("/editPage",methods=("GET", "POST"))
+def editPage():
+    t_ID = request.form['taskEditBtn']
+
+    # database_update_task(task_id, name, description, status)
+    return render_template("editTaskPage.html",task = database_get_task(t_ID),title=TITRE)
+
+
+@app.route("/update_task", methods=("GET", "POST"))
+def update_task():
+    task_id = request.form['btnSubmit']
+    title = request.form.get("NewTaskTitle")
+    desc = request.form.get("NewTaskContent")
+    status = request.form.get("selectSection")
+
+    database_update_task(task_id,title,desc,status)
+
+    return render_template("IziPostApp.html",title=TITRE,tasksList=database_fetch_tasks())
+
 
 
 @app.route("/createNewTaskPage")
@@ -164,24 +210,22 @@ def register():
         error = None
 
         if not username:
-            error = "Username is required."
+            flash("Username is required.")
         elif not password:
-            error = "Password is required."
+            flash("Password is required.")
 
-        if error is None:
+        if error is None and username and password:
             try:
                 database.execute(
                     "INSERT INTO users (username, password, firstname, name) VALUES (?, ?, ?, ?)",
                     (username, hash_mdp(password), firstname, lastname),
                 )
                 database.commit()
+                return render_template("loginForm.html", title=TITRE)
             except database.IntegrityError:
                 error = "Pseudo already used."
                 flash(error)
-            else:
-                return redirect(url_for("login"))
 
-        return redirect(url_for("register"))
     return render_template("signupForm.html", title=TITRE)
 
 
@@ -205,10 +249,11 @@ def login():
             session.clear()
             session["username"] = user["username"]
             session["id"] = user["id"]
-            return redirect(url_for("show_app"))
+            return redirect(url_for("index"))
 
         flash(error)
         return redirect(url_for("login"))
+
     return render_template("loginForm.html", title=TITRE)
 
 
