@@ -72,6 +72,7 @@ def database_insert_task(name, desc, owner_id, status):
     )
     database.commit()
 
+
 def database_fetch_tasks():
     """get all tasks from a user"""
     database = get_database()
@@ -94,9 +95,15 @@ def database_update_task(task_id, name, description, status):
     database = get_database()
     database.execute(
         "UPDATE tasks SET name = ?, description = ?, status = ? WHERE id = ?",
-        (name, description, status, task_id,),
+        (
+            name,
+            description,
+            status,
+            task_id,
+        ),
     )
     database.commit()
+
 
 def database_get_task(task_id):
     """Get a task in the database
@@ -138,7 +145,7 @@ def database_delete_tasks():
     """delete a task with a specific ID"""
     if request.method == "POST":
         database = get_database()
-        database.execute("DELETE FROM tasks WHERE id = ?", (request.form['task'],))
+        database.execute("DELETE FROM tasks WHERE id = ?", (request.form["task"],))
         database.commit()
 
     return redirect(url_for("show_app"))
@@ -168,25 +175,28 @@ def show_app():
     )
 
 
-@app.route("/editPage",methods=("GET", "POST"))
+@app.route("/editPage", methods=("GET", "POST"))
 def editPage():
-    t_ID = request.form['taskEditBtn']
+    t_ID = request.form["taskEditBtn"]
 
     # database_update_task(task_id, name, description, status)
-    return render_template("editTaskPage.html",task = database_get_task(t_ID),title=TITRE)
+    return render_template(
+        "editTaskPage.html", task=database_get_task(t_ID), title=TITRE
+    )
 
 
 @app.route("/update_task", methods=("GET", "POST"))
 def update_task():
-    task_id = request.form['btnSubmit']
+    task_id = request.form["btnSubmit"]
     title = request.form.get("NewTaskTitle")
     desc = request.form.get("NewTaskContent")
     status = request.form.get("selectSection")
 
-    database_update_task(task_id,title,desc,status)
+    database_update_task(task_id, title, desc, status)
 
-    return render_template("IziPostApp.html",title=TITRE,tasksList=database_fetch_tasks())
-
+    return render_template(
+        "IziPostApp.html", title=TITRE, tasksList=database_fetch_tasks()
+    )
 
 
 @app.route("/createNewTaskPage")
