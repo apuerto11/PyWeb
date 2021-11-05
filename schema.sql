@@ -1,3 +1,4 @@
+--Creation of the user table.
 CREATE TABLE "users" (
 	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 	username TEXT(25) NOT NULL UNIQUE,
@@ -6,6 +7,7 @@ CREATE TABLE "users" (
 	name TEXT(25) NOT NULL
 );
 
+--Creation of the tasks table.
 CREATE TABLE "tasks" (
 	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 	name TEXT(30) NOT NULL,

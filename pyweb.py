@@ -12,7 +12,6 @@ from flask import (
     url_for,
     redirect,
     request,
-    # current_app,
     session,
 )
 
@@ -49,22 +48,24 @@ if not os.path.isfile("instance/flaskr.sqlite"):
 
 
 def hash_mdp(password):
-    """Encrypt password
+    """Encrypt a string
 
-    Keyword arguments:
-    pw -- Password to encrypt as string
+    Keyword arguments:\n
+    password -- String to encrypt
     """
     not_hashed = hashlib.sha256()
     not_hashed.update(password.encode("utf-8"))
     return not_hashed.digest()
 
-def database_insert_task(name, desc, owner_id, status):
-    """Insert user task in database
 
-    Keyword arguments:
-    name -- lastname of the user as string
-    desc -- description of the task
-    owner_id -- The ID of the owner"""
+def database_insert_task(name, desc, owner_id, status):
+    """Insert a task in the database
+
+    Keyword arguments:\n
+    name -- lastname of the user as string\n
+    desc -- description of the task as string\n
+    owner_id -- the ID of the owner as int\n
+    status -- status of the task (0 = normal, 1 = important, 2 = urgent, 3 = done)"""
     database = get_database()
 
     database.execute(
@@ -75,7 +76,13 @@ def database_insert_task(name, desc, owner_id, status):
 
 
 def database_update_task(task_id, name, description, status):
-    """Update a task in the database"""
+    """Update a task in the database
+
+    Keyword arguments:\n
+    name -- lastname of the user as string\n
+    desc -- description of the task as string\n
+    owner_id -- the ID of the owner as int\n
+    status -- status of the task (0 = normal, 1 = important, 2 = urgent, 3 = done)"""
     database = get_database()
     database.execute(
         "UPDATE tasks SET name = ?, description = ?, status = ? WHERE id = ?",
@@ -85,7 +92,10 @@ def database_update_task(task_id, name, description, status):
 
 
 def database_fetch_tasks(username):
-    """get all tasks from a user"""
+    """get all tasks from a user
+
+    Keyword arguments:\n
+    username -- username of the user as string"""
     database = get_database()
     tasks = database.execute(
         "SELECT * FROM tasks t INNER JOIN users u on t.owner = u.id WHERE u.username = ?",
@@ -95,7 +105,10 @@ def database_fetch_tasks(username):
 
 
 def database_delete_tasks(task_id):
-    """delete a task with a specific ID"""
+    """delete a task with a specific ID
+
+    Keyword arguments:\n
+    task_id -- id of the task as int"""
     if request.method == "POST":
         database = get_database()
         database.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
@@ -129,9 +142,12 @@ def show_app():
     """App routing"""
     return render_template("IziPostApp.html", title=TITRE)
 
+
 @app.route("/createNewTaskPage")
 def create_new_task_page():
-    return render_template("createNewTaskPage.html",title=TITRE)
+    """Task Creation Routing"""
+    return render_template("createNewTaskPage.html", title=TITRE)
+
 
 @app.route("/register", methods=("GET", "POST"))
 def register():
@@ -192,7 +208,6 @@ def login():
             return redirect(url_for("show_app"))
 
         flash(error)
-        
         return redirect(url_for("login"))
     return render_template("loginForm.html", title=TITRE)
 
